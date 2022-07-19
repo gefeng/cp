@@ -4,7 +4,16 @@
 
 using namespace std;
 
+void run_case() {
+}
+
 int main() {
     ios::sync_with_stdio(false);        // de-sync with c stream
-    cin.tie(nullptr);                   // disable flushing of std::cout
+    cin.tie(0);                         // disable flushing of std::cout
+    
+    int _t = 0;
+    cin << _t;
+    while(_t-- > 0) {
+        run_case();
+    }
 }
