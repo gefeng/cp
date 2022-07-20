@@ -1,5 +1,7 @@
-#include <iostream>
+#include <algorithm>
 #include <array>
+#include <cmath>
+#include <iostream>
 #include <vector>
 
 using namespace std;
@@ -12,7 +14,7 @@ int main() {
     cin.tie(0);                         // disable flushing of std::cout
     
     int _t = 0;
-    cin << _t;
+    cin >> _t;
     while(_t-- > 0) {
         run_case();
     }
