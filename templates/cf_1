@@ -13,9 +13,9 @@ int main() {
     ios::sync_with_stdio(false);        // de-sync with c stream
     cin.tie(0);                         // disable flushing of std::cout
     
-    int _t = 0;
-    cin >> _t;
-    while(_t-- > 0) {
+    int t = 0;
+    cin >> t;
+    while(t--) {
         run_case();
     }
 }
