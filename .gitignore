@@ -31,5 +31,8 @@
 *.out
 *.app
 
-# Practise folders
+# bin folder
+bin/
+
+# Practise folder
 practise/
