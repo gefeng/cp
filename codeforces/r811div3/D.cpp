@@ -20,54 +20,33 @@ void run_case() {
         cin >> S[i];
     }
 
-    unordered_map<int, vector<int>> map;
-    for(int i = 0; i < N; i++) {
-        int j = 0;
-        while(true) {
-            j = T.find(S[i], j);
-
-            if(j == string::npos) {
-                break;
-            }
-
-            map[i].push_back(j);
-            j++;
-        }
-    }
-
-    vector<pair<int, int>> ans;
-    int len = T.length();
-    for(int i = 0; i < len; ) {
-        int max_l = 0;
-        int max_i = 0; 
-        int max_p = 0;
-
-        for(auto& it : map) {
-            for(int j : it.second) {
-                int k = j + S[it.first].length() - 1;
-                if(j <= i && k >= i) {
-                    if(max_l < k - i + 1) {
-                        max_l = k - i + 1;
-                        max_i = it.first;
-                        max_p = j;
+    int n = T.length();
+    vector<int> dp(n + 1, -1);
+    vector<int> pre_which(n + 1, -1);
+    vector<int> pick_what(n + 1, -1);
+    dp[0] = 0;
+    for(int i = 1; i <= n; i++) {
+        for(int j = 0; j < N; j++) {
+            string& s = S[j];
+            if(T.substr(0, i).ends_with(s)) {
+                for(int k = i - s.length(); k <= i - 1; k++) {
+                    if(dp[k] != -1 && (dp[i] == -1 || dp[i] > dp[k] + 1)) {
+                        dp[i] = dp[k] + 1; 
+                        pre_which[i] = k;
+                        pick_what[i] = j;
                     }
                 }
             }
         }
-
-        if(!max_l) {
-            cout << -1 << '\n';
-            return;
-        }
-
-        ans.emplace_back(max_i + 1, max_p + 1);
-        i += max_l;
-    } 
-
-    cout << ans.size() << '\n';
-    for(auto& p : ans) {
-        cout << p.first << ' ' << p.second << '\n';
     }
+
+    cout << dp[n] << '\n';
+    if(dp[n] != -1) {
+        for(int i = n; i > 0; ) {
+            cout << pick_what[i] + 1 << ' ' << i - S[pick_what[i]].length() + 1 << '\n';
+            i = pre_which[i];
+        }
+    } 
 }
 
 int main() {
