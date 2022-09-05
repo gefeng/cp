@@ -8,13 +8,13 @@
 
 using namespace std;
 
-void run_case() {
+void run_case(int T) {
 }
 
 int main() {
     int T;
     cin >> T;
-    while(T--) {
-        run_case();
+    for(int t = 1; t <= T; t++) {
+        run_case(t);
     }
 }
