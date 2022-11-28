@@ -9,6 +9,20 @@
 using namespace std;
 using LL = long long;
 
+LL q_pow(LL x, LL y, LL MOD) {
+    LL res = 1LL;
+    while(y) {
+        if(y & 1) {
+            res *= x;
+            res %= MOD;
+        }
+        x *= x;
+        x %= MOD;
+        y >>= 1LL;
+    }
+    return res;
+}
+
 void run_case() {
     int N;
     LL MOD;
@@ -20,7 +34,13 @@ void run_case() {
         fact[i] = fact[i - 1] * i % MOD;
     }
 
-    vector<vector<LL>> comb(N + 1, vector<LL>(N + 1, 0LL));
+    vector<LL> invf(N + 1, 0LL);
+    invf[0] = 1LL;
+    for(int i = 1; i <= N; i++) {
+        invf[i] = q_pow(fact[i], MOD - 2LL, MOD);
+    }
+
+    /*vector<vector<LL>> comb(N + 1, vector<LL>(N + 1, 0LL));
     comb[0][0] = 1LL;
     for(int i = 1; i <= N; i++) {
         comb[i][0] = 1LL;
@@ -28,7 +48,7 @@ void run_case() {
         for(int j = 1; j < i; j++) {
             comb[i][j] = (comb[i - 1][j - 1] + comb[i - 1][j]) % MOD;
         }
-    }
+    }*/
 
     LL ans = 0LL;
 
@@ -38,7 +58,8 @@ void run_case() {
         LL last = N / 2 + x - (N + 1) / 2 + 1;
         LL optional = max(0LL, 1LL * x - 1);
         for(int y = 0; y <= optional; y++) {
-            sum += (comb[optional][y] * fact[N - x - 1 + y - 1] % MOD) * last % MOD;
+            LL bion = (fact[optional] * invf[y] % MOD) * invf[optional - y] % MOD;
+            sum += (bion * fact[N - x - 1 + y - 1] % MOD) * last % MOD;
             sum %= MOD;
         } 
         ans += sum;
