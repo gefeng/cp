@@ -1,4 +1,5 @@
 #include <iostream>
+#include <utility>
 #include <cassert>
 #include <algorithm>
 #include <cmath>
@@ -6,14 +7,12 @@
 #include <string>
 #include <vector>
 
-using namespace std;
-
 void run_case() {
 }
 
 int main() {
-    ios_base::sync_with_stdio(false);
-    cin.tie(nullptr);
+    std::ios_base::sync_with_stdio(false);
+    std::cin.tie(nullptr);
 
     run_case();
 }

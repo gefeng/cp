@@ -1,4 +1,5 @@
 #include <iostream>
+#include <utility>
 #include <cassert>
 #include <algorithm>
 #include <cmath>
@@ -6,14 +7,12 @@
 #include <string>
 #include <vector>
 
-using namespace std;
-
 void run_case(int T) {
 }
 
 int main() {
     int T;
-    cin >> T;
+    std::cin >> T;
     for(int t = 1; t <= T; t++) {
         run_case(t);
     }
