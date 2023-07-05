@@ -26,10 +26,10 @@ void run_case() {
         return sqrt((x1 - x2) * (x1 - x2) + (y1 - y2) * (y1 - y2));
     };
 
-    auto get_intersection = [&](double x1, double y1, double r1, double x2, double y2, double r2) {
+    auto get_intersection = [](double x1, double y1, double r1, double x2, double y2, double r2) {
         std::vector<std::pair<double, double>> res;
         
-        double d = get_distance(x1, y1, x2, y2);
+        double d = sqrt((x1 - x2) * (x1 - x2) + (y1 - y2) * (y1 - y2));
         if(r1 + r2 < d) {
             return res;
         }
