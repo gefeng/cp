@@ -8,14 +8,12 @@
 #include <string>
 #include <vector>
 
+constexpr int INF = (int)1e9;
+
 class Solution {
 public:
     int minimumBeautifulSubstrings(std::string s) {
         int n = s.length();
-        
-        if(s[0] == '0') {
-            return -1;
-        }
         
         std::set<int> a;
         int p_5 = 1;
@@ -24,35 +22,20 @@ public:
             p_5 *= 5;
         }
         
-        int ans = n + 1;
-        for(int i = 1; i < (1 << n); i++) {
-            bool ok = true;
+        std::vector<int> dp(n + 1, INF);
+        dp[0] = 0;
+        for(int i = 1; i <= n; i++) {
             int x = 0;
-            int cnt = 1;
-            for(int j = 0; j < n; j++) {
-                x = x * 2 + s[j] - '0';
-                
-                if((i & (1 << j)) || j == n - 1) {
-                    if(a.find(x) == a.end()) {
-                        ok = false;
-                        break;
-                    }
-                    x = 0;
-                    if(j + 1 < n && s[j + 1] == '0') {
-                        ok = false;
-                        break;
-                    }
-                    if(j + 1 < n) {
-                        cnt += 1;
-                    }
+            for(int j = i; j > 0; j--) {
+                if(s[j - 1] == '1') {
+                    x |= 1 << (i - j);
+                } 
+                if(s[j - 1] != '0' && a.find(x) != a.end() && dp[j - 1] != INF) {
+                    dp[i] = std::min(dp[i], dp[j - 1] + 1);
                 }
-            }
-            
-            if(ok) {
-                ans = std::min(ans, cnt);
             }
         }
         
-        return ans == n + 1 ? -1 : ans;
+        return dp[n] == INF ? -1 : dp[n];
     }
 };
