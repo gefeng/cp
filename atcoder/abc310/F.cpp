@@ -51,14 +51,14 @@ void run_case() {
             } 
 
             for(int k = 1; k <= std::min(10, v); k++) {
-                int nj = j;
-                for(int s = 0; s <= 10; s++) {
+                int nj = (j | (j << k)) & ((1 << 11) - 1);
+                /*for(int s = 0; s <= 10; s++) {
                     if((j & (1 << s))) {
                         if(s + k <= 10) {
                             nj |= (1 << (s + k)); 
                         }
                     }
-                }
+                }*/
 
                 dp[i + 1][nj] += dp[i][j] * inv[v] % MOD;
                 dp[i + 1][nj] %= MOD;
