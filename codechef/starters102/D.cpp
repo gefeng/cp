@@ -19,64 +19,29 @@ void run_case() {
     }
 
     std::map<int, int> freq;
+    int max_v = 0;
     for(int x : A) {
         freq[x] += 1;
+        max_v = std::max(max_v, x);
     }
 
-    std::map<int, std::map<int, int>> g;
-    std::map<int, int> indegree;
-    std::priority_queue<std::pair<int64_t, int>>  pq;
-    std::map<int, int64_t> max_score;
-    for(auto [x, v] : freq) {
-        std::vector<int> factors;
-        for(int f = 1; f * f <= x; f++) {
-            if(x % f == 0) {
-                if(f != x) {
-                    factors.push_back(f);
-                }
-                if(x / f != f && x / f != x) {
-                    factors.push_back(x / f);
-                }
-            }
-        }
-
-        for(int f : factors) {
-            if(freq.find(f) != freq.end()) {
-                g[x][f] = freq[f];
-                indegree[f] += 1;
-            }
-        }
-    }
-
-    for(auto [v, f] : freq) {
-        if(indegree.find(v) == indegree.end()) {
-            pq.emplace(f, v);
-            max_score[v] = f;
-        }
-    }
-
-    while(!pq.empty()) {
-        std::pair<int64_t, int> cur = pq.top();
-        pq.pop();
-        int64_t s = cur.first;
-        int v = cur.second;
-        
-        if(max_score[v] != s) {
+    std::vector<int> dp(max_v + 1, 0);
+    for(int i = max_v; i > 0; i--) {
+        if(freq.find(i) == freq.end()) {
             continue;
         }
 
-        for(auto [nv, w] : g[v]) {
-            int64_t ns = s + w;
-            if(max_score.find(nv) == max_score.end() || max_score[nv] < ns) {
-                max_score[nv] = ns;
-                pq.emplace(ns, nv);
+        dp[i] = std::max(dp[i], freq[i]);
+        for(int j = i + i; j <= max_v; j += i) {
+            if(dp[j] != 0) {
+                dp[i] = std::max(dp[i], dp[j] + freq[i]);
             }
         }
     }
 
     int64_t ans = 0;
-    for(auto [v, s] : max_score) {
-        ans = std::max(ans, v * s);  
+    for(int i = 1; i <= max_v; i++) {
+        ans = std::max(ans, (int64_t)dp[i] * i);
     }
 
     std::cout << ans << '\n';
