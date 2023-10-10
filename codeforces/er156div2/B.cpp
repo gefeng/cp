@@ -8,8 +8,6 @@
 #include <vector>
 #include <iomanip>
 
-constexpr double eps = 1e-8;
-
 void run_case() {
     int PX, PY, AX, AY, BX, BY;
     std::cin >> PX >> PY >> AX >> AY >> BX >> BY;
@@ -26,17 +24,16 @@ void run_case() {
     double d4 = dist(PX, PY, BX, BY);
     double d5 = dist(AX, AY, BX, BY);
 
-    if(d1 - d2 <= eps && d3 - d4 <= eps) {
+    if(d1 <= d2 && d3 <= d4) {
         ans = std::max(d1, d3);
-    } else if(d2 - d1 <= eps && d4 - d3 <= eps) {
+    } else if(d2 <= d1 && d4 <= d3) {
         ans = std::max(d2, d4);
     } else {
         ans = std::max(std::min(d1, d2), std::min(d3, d4));
-        if(ans * 2.0 - d5 <= eps) {
+        if(ans * 2.0 <= d5) {
             ans = d5 / 2.0;
         }
     }
-
     std::cout << std::setprecision(20) << ans << '\n';
 }
 
