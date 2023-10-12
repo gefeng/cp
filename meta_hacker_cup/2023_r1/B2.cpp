@@ -6,9 +6,9 @@
 #include <array>
 #include <string>
 #include <vector>
-#include <set>
+#include <map>
 
-void dfs(std::vector<int>& div, int sum, int prod, std::vector<int>& cand, std::vector<int>& ans) {
+/*void dfs(std::vector<int>& div, int sum, int prod, std::vector<int>& cand, std::vector<int>& ans) {
     int n = div.size();
     if(sum == 0 || prod == 1) {
         if(prod == 1 && (ans.empty() || sum + cand.size() < ans.size())) {
@@ -32,29 +32,33 @@ void dfs(std::vector<int>& div, int sum, int prod, std::vector<int>& cand, std::
             cand.pop_back();
         }
     }
+}*/
+
+std::map<int, std::vector<int>> m;
+
+void dfs(int sum, int prod, int last, std::vector<int>& cur) {
+    if(sum == 0) {
+        if(m.find(prod) == m.end() || m[prod].size() > cur.size()) {
+            m[prod] = cur;
+        }
+        return;
+    }
+
+    for(int i = last; i <= sum; i++) {
+        cur.push_back(i);
+        dfs(sum - i, prod * i, i, cur);
+        cur.pop_back();
+    }
 }
 
 void run_case(int T) {
     int P;
     std::cin >> P;
 
-    std::vector<int> div;
-    for(int i = 1; i * i <= P; i++) {
-        if(P % i == 0) {
-            if(i <= 41 && i != 1) {
-                div.push_back(i);
-            }
-            if(P / i != i && P / i <= 41 && P / i != 1) {
-                div.push_back(P / i);
-            }
-        }
-    }
-
-    std::sort(div.begin(), div.end());
-    
-    std::vector<int> cand;
     std::vector<int> ans;
-    dfs(div, 41, P, cand, ans);
+    if(m.find(P) != m.end()) {
+        ans = m[P];
+    }
 
     std::cout << "Case #" << T << ": ";
     if(ans.empty()) {
@@ -69,6 +73,9 @@ void run_case(int T) {
 }
 
 int main() {
+    std::vector<int> cur;
+    dfs(41, 1, 1, cur);
+    
     int T;
     std::cin >> T;
     for(int t = 1; t <= T; t++) {
