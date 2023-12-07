@@ -14,42 +14,6 @@ void run_case() {
     std::string S;
     std::cin >> S;
 
-    /*std::vector<std::pair<char, int>> s;
-    for(int i = 0; i < N; ) {
-        int j = i;
-        while(i < N && S[i] == S[j]) {
-            i += 1;
-        }
-
-        int cnt = i - j;
-        while(!s.empty()) {
-            if(s.back().first == S[j]) {
-                cnt += s.back().second;
-                s.pop_back();
-            } else {
-                if(cnt == 1 && s.back().second == 1) {
-                    break;
-                }
-
-                if(s.back().second > cnt) {
-                    s.back().second -= cnt;
-                    cnt = 0;
-                    break;
-                }
-
-                cnt -= s.back().second;
-                s.pop_back();
-                if(cnt == 0) {
-                    break;
-                }
-            }
-        }
-
-        if(cnt) {
-            s.emplace_back(S[j], cnt); 
-        }
-    }*/
-
     std::array<int, 26> cnt = {};
     for(int i = 0; i < N; i++) {
         cnt[S[i] - 'a'] += 1;
