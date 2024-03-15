@@ -17,32 +17,23 @@ void run_case() {
         std::cin >> A[i];
     }
 
-    std::deque<int> a;
-
-    a.push_back(A.back());
+    int pre = A.back();
     for(int i = N - 2; i >= 0; i--) {
-        if(A[i] > a.front()) {
+        if(A[i] > pre) {
             int x = A[i];
-            std::vector<int> digits;
             while(x) {
-                int d = x % 10;
-                a.push_front(d);
+                if(x % 10 > pre) {
+                    std::cout << "No" << '\n';
+                    return;
+                }
+                pre = x % 10;
                 x /= 10;
             }
         } else {
-            a.push_front(A[i]);
+            pre = A[i];
         }
     }
-    
-    int pre = -1; 
-    while(!a.empty()) {
-        if(a.front() < pre) {
-            std::cout << "No" << '\n';
-            return;
-        }
-        pre = a.front();
-        a.pop_front();
-    }
+
     std::cout << "Yes" << '\n';
 }
 

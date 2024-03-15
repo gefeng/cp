@@ -14,19 +14,23 @@ void run_case() {
     int n = S.size();
     int ans = 0;
     
-    std::vector<std::vector<int>> dp(n, std::vector<int>(n + 1, 0));
-    for(int i = 1; i < n; i++) {
-        for(int j = 1; j <= n; j++) {
-            if(i - j >= 0) {
-                dp[i][j] = (S[i] == S[i - j] || S[i] == '?' || S[i - j] == '?') ? dp[i - 1][j] + 1 : 0;
-                if(dp[i][j] >= j) {
-                    ans = std::max(ans, j * 2);
-                }
+    for(int i = 1; i <= n / 2; i++) {
+        int cnt = 0;
+        for(int j = 0; j + i < n; j++) {
+            if(S[j] == S[j + i] || S[j] == '?' || S[j + i] == '?') {
+                cnt += 1; 
+            } else {
+                cnt = 0;
+            } 
+
+            if(cnt == i) {
+                ans = cnt;
+                break;
             }
-        } 
+        }
     }
 
-    std::cout << ans << '\n';
+    std::cout << ans * 2 << '\n';
 }
 
 int main() {
