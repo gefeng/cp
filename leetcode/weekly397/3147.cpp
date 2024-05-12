@@ -18,16 +18,10 @@ public:
         
         std::vector<int> save(n, -INF);
         for(int i = n - 1; i >= 0; i--) {
-            if(save[i] == -INF) {
+            if(i + k >= n) {
                 save[i] = energy[i];
-                for(int j = i + k; j < n; j += k) {
-                    if(save[j] != -INF) {
-                        save[i] += save[j];
-                        break;
-                    } else {
-                        save[i] += energy[j];
-                    }
-                }
+            } else {
+                save[i] = energy[i] + save[i + k];
             }
             ans = std::max(ans, save[i]);
         }
