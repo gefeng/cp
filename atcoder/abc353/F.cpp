@@ -21,38 +21,6 @@ void run_case() {
         if((x / K + y / K) % 2 != 0) {
             adj.push_back({x / K + y / K, x / K - y / K, 0});
         } else {
-            // int64_t lx = 0;
-            // int64_t ly = 0;
-            // int64_t d = 0;
-            //
-            // // left;
-            // d = (x % K) + 1;
-            // lx = x - d;
-            // if(lx >= 0) {
-            //     adj.push_back({lx / K, y / K, d});
-            // } else {
-            //     adj.push_back({-1, y / K, d});
-            // }
-            //
-            // // right
-            // d = K - (x % K);
-            // lx = x + d;
-            // adj.push_back({lx / K, y / K, d});
-            //
-            // // up
-            // d = K - (y % K);
-            // ly = y + d;
-            // adj.push_back({x / K, ly / K, d});
-            //
-            // // down
-            // d = (y % K) + 1;
-            // ly = y - d;
-            // if(ly >= 0) {
-            //     adj.push_back({x / K, ly / K, d});
-            // } else {
-            //     adj.push_back({x / K, -1, d});
-            // }
-            
             int64_t d_l = (x % K) + 1;
             int64_t d_r = K - (x % K);
             int64_t d_u = K - (y % K);
@@ -60,12 +28,8 @@ void run_case() {
         
             x /= K;
             y /= K;
-            // adj.push_back({x - y - 1, x + y - 1, d_l});
-            // adj.push_back({x - y + 1, x + y + 1, d_r});
-            // adj.push_back({x - y - 1, x + y + 1, d_u});
-            // adj.push_back({x - y + 1, x + y - 1, d_d});
-            adj.push_back({x + y - 1, x - y - 1, d_l});
-            adj.push_back({x + y + 1, x - y + 1, d_r});
+            adj.push_back({x - 1 + y, x - 1 - y, d_l});
+            adj.push_back({x + 1 + y, x + 1 - y, d_r});
             adj.push_back({x + y + 1, x - y - 1, d_u});
             adj.push_back({x + y - 1, x - y + 1, d_d});
         }
@@ -79,7 +43,6 @@ void run_case() {
             return dx + dy;
         }
         return dx + dy - std::min(dx, dy) / 2;
-        //return std::min(dx, dy) + std::max(dx, dy) / 2 * 3; 
     };
 
     int64_t ans = std::abs(SX - TX) + std::abs(SY - TY);
