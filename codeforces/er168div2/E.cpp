@@ -42,8 +42,10 @@ void run_case() {
         std::cin >> A[i];
     }
 
+    int max_v = std::max(N, *std::max_element(A.begin(), A.end()));
+
     fenwick_tree ft(N);
-    std::vector<std::vector<int>> pos(N + 1);
+    std::vector<std::vector<int>> pos(max_v + 1);
     for(int i = 0; i < N; i++) {
         ft.update(i, 1); 
         pos[A[i]].push_back(i);
