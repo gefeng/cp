@@ -12,7 +12,7 @@ std::vector<std::pair<LL, std::pair<LL, LL>>> lower_bound(LL x) {
         LL r = x / (x / l);
         LL q = x / l;
         res.push_back(make_pair(q, std::make_pair(l, r)));
-        l = r;
+        l = r + 1;
     }    
     return res;
 }
