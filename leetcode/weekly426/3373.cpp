@@ -10,35 +10,11 @@
 
 class Solution {
 public:
-    void dfs_1(std::vector<std::vector<int>>& g, int v, int p, std::vector<std::vector<int>>& dp_1) {
-        dp_1[0][v] = 1;
-        dp_1[1][v] = 0;
+    void bipartite(std::vector<std::vector<int>>& g, int v, int c, std::vector<int>& color) {
+        color[v] = c;
         for(int nei : g[v]) {
-            if(nei != p) {
-                dfs_1(g, nei, v, dp_1);
-                dp_1[0][v] += dp_1[1][nei];
-                dp_1[1][v] += dp_1[0][nei];
-            }
-        }
-    }
-    
-    void dfs_2(std::vector<std::vector<int>>& g, int v, int p, std::vector<std::vector<int>>& dp_1, std::vector<std::vector<int>>& dp_2) {
-        if(p == -1) {
-            dp_2[0][v] = dp_1[0][v];
-            dp_2[1][v] = dp_1[1][v];
-        } else {
-            int p_eve = dp_2[0][p];
-            int p_odd = dp_2[1][p];
-            p_eve -= dp_1[1][v];
-            p_odd -= dp_1[0][v];
-            
-            dp_2[0][v] = p_odd + dp_1[0][v];
-            dp_2[1][v] = p_eve + dp_1[1][v];
-        }
-        
-        for(int nei : g[v]) {
-            if(nei != p) {
-                dfs_2(g, nei, v, dp_1, dp_2);
+            if(color[nei] == -1) {
+                bipartite(g, nei, c ^ 1, color);
             }
         }
     }
@@ -64,25 +40,25 @@ public:
         }
         
         std::vector<int> ans(n, 0);
-        std::vector<std::vector<int>> dp_1(2, std::vector<int>(n, 0));
-        std::vector<std::vector<int>> dp_2(2, std::vector<int>(n, 0));
-        std::vector<std::vector<int>> dp_3(2, std::vector<int>(m, 0));
-        std::vector<std::vector<int>> dp_4(2, std::vector<int>(m, 0));
-        dfs_1(g_1, 0, -1, dp_1);
-        dfs_2(g_1, 0, -1, dp_1, dp_2);
-    
-        dfs_1(g_2, 0, -1, dp_3);
-        dfs_2(g_2, 0, -1, dp_3, dp_4);
+        std::vector<int> color_1(n, -1);
+        std::vector<int> color_2(m, -1);
         
-        int max_odd = 0;
+        bipartite(g_1, 0, 0, color_1);
+        bipartite(g_2, 0, 0, color_2);
+        
+        std::array<int, 2> cnt_1 = {};
+        std::array<int, 2> cnt_2 = {};
+    
+        for(int i = 0; i < n; i++) {
+            cnt_1[color_1[i]] += 1;
+        }
         for(int i = 0; i < m; i++) {
-            max_odd = std::max(max_odd, dp_4[1][i]);
+            cnt_2[color_2[i]] += 1;
         }
         
         for(int i = 0; i < n; i++) {
-            ans[i] = dp_2[0][i] + max_odd;
+            ans[i] = cnt_1[color_1[i]] + std::max(cnt_2[color_1[i]], cnt_2[color_1[i] ^ 1]);
         }
-        
         return ans;
     }
 };
