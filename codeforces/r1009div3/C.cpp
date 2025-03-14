@@ -1,0 +1,48 @@
+#include <iostream>
+#include <utility>
+#include <cassert>
+#include <algorithm>
+#include <cmath>
+#include <array>
+#include <string>
+#include <vector>
+
+void run_case() {
+    int X;
+    std::cin >> X;
+    
+    int y = 0;
+    for(int i = 0; i < 30; i++) {
+        if(X & (1 << i)) {
+            y |= 1 << i;
+            break;
+        }
+    }
+
+    for(int i = 0; i <= 30; i++) {
+        if(!(X & (1 << i))) {
+            y |= 1 << i;
+            break;
+        } 
+    }
+
+    if(y >= X) {
+        std::cout << -1 << '\n';
+        return;
+    }
+
+    int z = X ^ y;
+
+    std::cout << (X + y > z && X + z > y && y + z > X ? y : -1) << '\n';
+}
+
+int main() {
+    std::ios_base::sync_with_stdio(false);
+    std::cin.tie(0);
+    
+    int T;
+    std::cin >> T;
+    while(T--) {
+        run_case();
+    }
+}
