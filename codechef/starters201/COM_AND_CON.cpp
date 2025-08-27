@@ -1,0 +1,47 @@
+#include <iostream>
+#include <utility>
+#include <cassert>
+#include <algorithm>
+#include <cmath>
+#include <array>
+#include <string>
+#include <vector>
+
+void run_case() {
+    int N, M;
+    std::cin >> N >> M;
+
+    std::string ans = "";
+    if(N == 0) {
+        for(int i = 0; i < M - 2; i++) {
+            ans.append("><");
+        }
+        ans.append(">=>");
+    } else if(M == 0) {
+        for(int i = 0; i < N - 2; i++) {
+            ans.append("<<");
+        }
+        ans.append("<=<");
+    } else {
+        for(int i = 0; i < N - 1; i++) {
+            ans.append("<<");
+        }
+        ans.append("<<>");
+        for(int i = 0; i < M - 1; i++) {
+            ans.append("<>");
+        }
+    }
+
+    std::cout << ans << '\n';
+}
+
+int main() {
+    std::ios_base::sync_with_stdio(false);
+    std::cin.tie(0);
+    
+    int T;
+    std::cin >> T;
+    while(T--) {
+        run_case();
+    }
+}
