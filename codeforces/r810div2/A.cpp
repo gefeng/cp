@@ -1,29 +1,28 @@
-#include <algorithm>
-#include <array>
-#include <cmath>
 #include <iostream>
+#include <utility>
+#include <cassert>
+#include <algorithm>
+#include <cmath>
+#include <array>
+#include <string>
 #include <vector>
 
-using namespace std;
-
 void run_case() {
-    int n = 0;
-    cin >> n;
+    int N;
+    std::cin >> N;
 
-    for(int i = 0; i < n - 1; i++) {
-        cout << i + 2 << ' ';
+    for(int i = 0; i < N; i++) {
+        std::cout << (i == 0 ? N : i) << " \n"[i == N - 1];
     }
-
-    cout << 1 << '\n';
 }
 
 int main() {
-    ios::sync_with_stdio(false);        // de-sync with c stream
-    cin.tie(0);                         // disable flushing of std::cout
+    std::ios_base::sync_with_stdio(false);
+    std::cin.tie(0);
     
-    int t = 0;
-    cin >> t;
-    while(t--) {
+    int T;
+    std::cin >> T;
+    while(T--) {
         run_case();
     }
 }

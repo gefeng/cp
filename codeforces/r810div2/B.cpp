@@ -1,64 +1,65 @@
-#include <algorithm>
-#include <array>
-#include <cmath>
 #include <iostream>
+#include <utility>
+#include <cassert>
+#include <algorithm>
+#include <cmath>
+#include <array>
+#include <string>
 #include <vector>
-
-using namespace std;
-using LL = long long;
+#include <numeric>
+#include <ranges>
+#include <set>
 
 void run_case() {
-    int n, m;
-    cin >> n >> m;
+    int N, M;
+    std::cin >> N >> M;
 
-    vector<int> A(n + 1, 0);
-    vector<int> D(n + 1, 0);
-    vector<pair<int, int>> B;
-    
-    for(int i = 1; i <= n; i++) {
-        cin >> A[i];
-    }
-
-    for(int i = 0; i < m; i++) {
-        int x, y;
-        cin >> x >> y;
-        D[x]++;
-        D[y]++;
-        B.emplace_back(x, y);
+    std::vector<int> A(N);
+    for(int i = 0; i < N; i++) {
+        std::cin >> A[i];
     }
     
-    int ans = 0;
-    if(m % 2 != 0) {
-        int min_v = 20000;
+    std::vector<std::pair<int, int>> E(M);
+    std::vector<int> degree(N, 0);
+    for(int i = 0; i < M; i++) {
+        int U, V;
+        std::cin >> U >> V;
+        U -= 1;
+        V -= 1;
+        degree[U] += 1;
+        degree[V] += 1;
+        E[i] = {U, V};
+    } 
 
-        for(auto& p : B) {
-            int x = p.first;
-            int y = p.second;
+    if(M % 2 == 0) {
+        std::cout << 0 << '\n';
+        return;
+    }
 
-            if(D[x] % 2 == 1) {
-                min_v = min(min_v, A[x]);
-            }
-            if(D[y] % 2 == 1) {
-                min_v = min(min_v, A[y]);
-            } 
-            if(D[x] % 2 == 0 && D[y] % 2 == 0) {
-                min_v = min(min_v, A[x] + A[y]);
-            }
+    int ans = std::accumulate(A.begin(), A.end(), 0);
+
+    for(auto [u, v] : E) {
+        if(degree[u] % 2 == 1) {
+            ans = std::min(ans, A[u]);
         }
-
-        ans = min_v;
+        if(degree[v] % 2 == 1) {
+            ans = std::min(ans, A[v]);
+        }
+        if(degree[u] % 2 == 0 && degree[v] % 2 == 0) {
+            ans = std::min(ans, A[u] + A[v]);
+        }
     }
-   
-    cout << ans << '\n';
+
+    std::cout << ans << '\n';
 }
 
 int main() {
-    ios::sync_with_stdio(false);        // de-sync with c stream
-    cin.tie(0);                         // disable flushing of std::cout
+    std::ios_base::sync_with_stdio(false);
+    std::cin.tie(0);
     
-    int t = 0;
-    cin >> t;
-    while(t--) {
+    int T;
+    std::cin >> T;
+    while(T--) {
         run_case();
     }
 }
