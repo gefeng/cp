@@ -22,34 +22,53 @@ void run_case() {
     std::ranges::sort(A);
 
     std::vector<int> a;
+    int max_f = 0;
     for(int i = 0; i < N; ) {
         int j = i;
         while(i < N && A[i] == A[j]) {
             i += 1;
         }
         a.push_back(i - j);
+        max_f = std::max(max_f, i - j);
     }
 
     int n = a.size();
-    std::ranges::sort(a);
-    
-    std::vector<int64_t> dp(N + 1, 0);
-    dp[0] = 1;
-    for(int i = 0; i < n; i++) {
-        std::vector<int64_t> ndp(dp);
-        for(int j = 0; j <= N - a[i]; j++) {
-            ndp[j + a[i]] += dp[j] * a[i] % MOD;
-            ndp[j + a[i]] %= MOD;
-        }
-        dp = std::move(ndp);
-    }
-
     int64_t ans = 0;
-    for(int i = a.back(); i <= N; i++) {
-        ans += dp[i];
-        ans %= MOD;
+    std::vector<int64_t> dp1(2, 0);
+    dp1[0] = 1;
+    for(int i = 0; i < n; i++) {
+        std::vector<int64_t> ndp1(dp1);
+        if(a[i] == max_f) {
+            ndp1[1] += dp1[0] * a[i] % MOD;
+            ndp1[1] %= MOD;
+            ndp1[1] += dp1[1] * a[i] % MOD;
+            ndp1[1] %= MOD;
+        } else {
+            for(int j = 0; j < 2; j++) {
+                ndp1[j] += dp1[j] * a[i] % MOD;
+                ndp1[j] %= MOD;
+            }
+        }
+        dp1 = std::move(ndp1);
     }
+    ans = dp1[1];
 
+    std::vector<int64_t> dp2(max_f + 1, 0);
+    dp2[0] = 1;
+    for(int i = 0; i < n; i++) {
+        std::vector<int64_t> ndp2(dp2);
+        if(a[i] != max_f) {
+            for(int j = 0; j <= max_f; j++) {
+                int nj = std::min(max_f, j + a[i]);
+                ndp2[nj] += dp2[j] * a[i] % MOD;
+                ndp2[nj] %= MOD;
+            }
+        }
+        dp2 = std::move(ndp2);
+    }
+    ans += dp2[max_f];
+    ans %= MOD;
+    
     std::cout << ans << '\n';
 }
 
