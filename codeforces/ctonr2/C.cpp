@@ -1,50 +1,66 @@
-#include <algorithm>
-#include <array>
-#include <cmath>
 #include <iostream>
+#include <utility>
+#include <cassert>
+#include <algorithm>
+#include <cmath>
+#include <array>
+#include <string>
 #include <vector>
-
-using namespace std;
+#include <ranges>
 
 void run_case() {
     int N, M;
-    cin >> N >> M;
-    
-    vector<int> A(M, 0);
+    std::cin >> N >> M;
+
+    std::vector<int> A(M);
     for(int i = 0; i < M; i++) {
-        cin >> A[i];
+        std::cin >> A[i];
+        A[i] -= 1;
     }
 
-    sort(A.begin(), A.end());
+    std::ranges::sort(A);
 
-    vector<int> D;
-    for(int i = 1; i < M; i++) {
-        D.push_back(A[i] - A[i - 1] - 1);
+    if(M == 1) {
+        std::cout << std::min(2, N) << '\n';
+        return;
     }
-    D.push_back(N - A[M - 1] + A[0] - 1);
 
-    sort(D.begin(), D.end(), greater<int>());
-
-    int save = 0;
-    int past = 0;
-    for(int d : D) {
-        d = max(0, d - 2 * past);
-        if(d) {
-            save += max(1, d - 1);
+    std::vector<int> a;
+    for(int i = 0; i < M; i++) {
+        int nxt = A[(i + 1) % M];
+        if(nxt - A[i] > 1) {
+            a.push_back(nxt - A[i] - 1);
         }
-        past += 2;
+        if(nxt < A[i]) {
+            a.push_back(N - A[i] - 1 + nxt);
+        }
     }
 
-    cout << N - save << '\n';
+    std::ranges::sort(a, std::greater<int>());
+
+    int64_t saved = 0;
+    int64_t day = 1;
+    for(auto x : a) {
+        int infected = (day - 1) * 2;
+        if(x > infected) {
+            saved += 1;
+            if(x - infected - 1 > 0) {
+                saved += x - infected - 2;
+            }
+        }
+        day += 2;
+    }
+
+    std::cout << N - saved << '\n';
 }
 
 int main() {
-    ios::sync_with_stdio(false);        // de-sync with c stream
-    cin.tie(0);                         // disable flushing of std::cout
+    std::ios_base::sync_with_stdio(false);
+    std::cin.tie(0);
     
-    int t = 0;
-    cin >> t;
-    while(t--) {
+    int T;
+    std::cin >> T;
+    while(T--) {
         run_case();
     }
 }

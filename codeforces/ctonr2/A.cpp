@@ -1,46 +1,45 @@
-#include <algorithm>
-#include <array>
-#include <cmath>
 #include <iostream>
-#include <vector>
+#include <utility>
+#include <cassert>
+#include <algorithm>
+#include <cmath>
+#include <array>
 #include <string>
-
-using namespace std;
+#include <vector>
 
 void run_case() {
     int N, M;
-    cin >> N >> M;
+    std::cin >> N >> M;
 
-    string s, t;
-    cin >> s >> t;
+    std::string S, T;
+    std::cin >> S >> T;
 
-    bool ans = false;
-    for(int i = 0; i <= N - M; i++) {
-        if(s[i] == t[0]) {
-            ans = true;
-            break;
+    int p = N - M + 1;
+    
+    for(int i = p, j = 1; i < N; i++, j++) {
+        if(S[i] != T[j]) {
+            std::cout << "No" << '\n';
+            return;
         }
     }
 
-    if(ans) {
-        for(int i = 1; i < M; i++) {
-            if(s[i + N - M] != t[i]) {
-                ans = false;
-                break;
-            }
+    for(int i = 0; i < p; i++) {
+        if(S[i] == T[0]) {
+            std::cout << "Yes" << '\n';
+            return;
         }
     }
 
-    cout << (ans ? "YES" : "NO") << '\n';
+    std::cout << "No" << '\n';
 }
 
 int main() {
-    ios::sync_with_stdio(false);        // de-sync with c stream
-    cin.tie(0);                         // disable flushing of std::cout
+    std::ios_base::sync_with_stdio(false);
+    std::cin.tie(0);
     
-    int t = 0;
-    cin >> t;
-    while(t--) {
+    int T;
+    std::cin >> T;
+    while(T--) {
         run_case();
     }
 }

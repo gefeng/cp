@@ -1,46 +1,58 @@
-#include <algorithm>
-#include <array>
-#include <cmath>
 #include <iostream>
+#include <utility>
+#include <cassert>
+#include <algorithm>
+#include <cmath>
+#include <array>
+#include <string>
 #include <vector>
-
-using namespace std;
 
 void run_case() {
     int N, X;
-    cin >> N >> X;
+    std::cin >> N >> X;
 
-    int ans = 0;
-    int l = 0;
-    int r = 0;
+    std::vector<int> A(N);
     for(int i = 0; i < N; i++) {
-        int v;
-        cin >> v;
-        if(i == 0) {
-            l = v - X; 
-            r = v + X;
+        std::cin >> A[i];
+    }
+
+    auto overlap = [](int l1, int r1, int l2, int r2) {
+        if(l1 > l2) {
+            std::swap(l1, l2);
+            std::swap(r1, r2);
+        }
+        return l2 <= r1;
+    };
+
+    int l = -1;
+    int r = -1;
+    int ans = 0;
+    for(int i = 0; i < N; i++) {
+        if(l == -1) {
+            l = A[i] - X;
+            r = A[i] + X;
         } else {
-            if((v - X <= r && v + X >= l) || (v + X >= l && v - X <= r)) {
-                l = max(l, v - X);
-                r = min(r, v + X);
+            if(overlap(l, r, A[i] - X, A[i] + X)) {
+                l = std::max(l, A[i] - X);
+                r = std::min(r, A[i] + X);
             } else {
-                l = v - X;
-                r = v + X;
-                ans++;
+                l = A[i] - X;
+                r = A[i] + X;
+                ans += 1;
             }
         }
     }
 
-    cout << ans << '\n';
+    std::cout << ans << '\n';
 }
 
 int main() {
-    ios::sync_with_stdio(false);        // de-sync with c stream
-    cin.tie(0);                         // disable flushing of std::cout
+    std::ios_base::sync_with_stdio(false);
+    std::cin.tie(0);
     
-    int t = 0;
-    cin >> t;
-    while(t--) {
+    int T;
+    std::cin >> T;
+    while(T--) {
         run_case();
     }
 }
