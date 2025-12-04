@@ -1,93 +1,116 @@
-#include <algorithm>
-#include <array>
-#include <cmath>
 #include <iostream>
+#include <utility>
+#include <cassert>
+#include <algorithm>
+#include <cmath>
+#include <array>
+#include <string>
 #include <vector>
+#include <set>
 
-using namespace std;
+constexpr int64_t INF = static_cast<int64_t>(2e18);
 
 void run_case() {
     int M;
-    cin >> M;
+    std::cin >> M;
 
-    vector<int> R1(M, 0);
-    vector<int> R2(M, 0);
-    for(int i = 0; i < M; i++) {
-        cin >> R1[i];
-        R1[i]++;
+    std::vector<std::vector<int64_t>> A(2, std::vector<int64_t>(M, 0));
+    for(int i = 0; i < 2; i++) {
+        for(int j = 0; j < M; j++) {
+            std::cin >> A[i][j];
+        }
     }
 
-    for(int i = 0; i < M; i++) {
-        cin >> R2[i];
-        R2[i]++;
-    }
-
-    R1[0] = 0;
-
-    // pre-calculate the minimum waiting time to complete a 
-    // suffix traversal start from column j ending with column j
-    // a_i <= t + k - 1 => t >= a_i - k + 1
-
-    // clockwise suffix
-    vector<int> t_wait_suffix1(M, 0);
-    // anti-clockwise suffix
-    vector<int> t_wait_suffix2(M, 0);
-    int max1 = -1;
-    int max2 = -1;
-    int max1_reverse = -1;
-    int max2_reverse = -1;
-    for(int i = M - 1; i >= 0; i--) {
-        max1 = max(max1, R1[i]);
-        max2 = max(max2, R2[i]);
-        max1_reverse = max(max1_reverse, max1 - (M - i) * 2 + 1);
-        max2_reverse = max(max2_reverse, max2 - (M - i) * 2 + 1);
-        t_wait_suffix1[i] = max(max1, max2_reverse) - 1;
-        t_wait_suffix2[i] = max(max2, max1_reverse) - 1;
-        max1--;
-        max2--;
-        max1_reverse--;
-        max2_reverse--;
-    } 
-
-    int ans = max(-1, t_wait_suffix1[0]) + 2 * M;
-    int cur = -1;
-    int dir = 0;
-    for(int i = 0; i < M; i++) {
-        if(!dir) {
-            cur++;
-            cur = max(cur, R1[i]);
-            cur++;
-            cur = max(cur, R2[i]);
-            if(i + 1 < M) {
-                ans = min(ans, max(cur, t_wait_suffix2[i + 1]) + 2 * (M - i - 1));
-            } else {
-                ans = min(ans, cur);
+    auto solve1 = [&]() {
+        int64_t res = INF;
+        std::multiset<int64_t> ms1;
+        std::multiset<int64_t> ms2;
+        for(int i = 0; i < M; i++) {
+            if(i != 0) {
+                ms1.insert(A[0][i] - i);
             }
-        } else {
-            cur++;
-            cur = max(cur, R2[i]);
-            cur++;
-            cur = max(cur, R1[i]);
-            if(i + 1 < M) {
-                ans = min(ans, max(cur, t_wait_suffix1[i + 1]) + 2 * (M - i - 1));
-            } else {
-                ans = min(ans, cur);
-            }
+            ms2.insert(A[1][i] + i);
         }
 
-        dir ^= 1;
-    }
+        int64_t t = 0;
+        for(int i = 0; i < M; i += 2) {
+            if(i) {
+                ms1.erase(ms1.find(A[0][i] - i));
+                t = std::max(A[0][i], t) + 1;
+            }
+            int64_t max1 = ms1.empty() ? 0 : *ms1.rbegin();
+            int64_t max2 = ms2.empty() ? 0 : *ms2.rbegin();
+            int64_t st = t;
+            st = std::max(st, max1 + i + 1);
+            st = std::max(st, max2 + i - M * 2 + 2);
 
-    cout << ans << '\n';
+            res = std::min(res, (M - 1 - i) * 2 + 1 + st);
+            
+            if(i + 1 < M) {
+                ms1.erase(ms1.find(A[0][i + 1] - i - 1));
+                ms2.erase(ms2.find(A[1][i] + i));
+                ms2.erase(ms2.find(A[1][i + 1] + i + 1));
+                t = std::max(t, A[1][i]) + 1;
+                t = std::max(t, A[1][i + 1]) + 1;
+                t = std::max(t, A[0][i + 1]) + 1;
+                if(i + 1 == M - 1) {
+                    res = std::min(res, t);
+                }
+            }
+        }
+        return res;
+    };
+
+    auto solve2 = [&]() {
+        int64_t res = INF;
+        std::multiset<int64_t> ms1;
+        std::multiset<int64_t> ms2;
+        for(int i = 1; i < M; i++) {
+            ms1.insert(A[0][i] + i);
+            ms2.insert(A[1][i] - i);
+        }
+
+        int64_t t = 0;
+        t = A[1][0] + 1;
+        for(int i = 1; i < M; i += 2) {
+            ms2.erase(ms2.find(A[1][i] - i));
+            t = std::max(t, A[1][i]) + 1;
+            
+            int64_t max1 = ms1.empty() ? 0 : *ms1.rbegin();
+            int64_t max2 = ms2.empty() ? 0 : *ms2.rbegin();
+            int64_t st = t;
+            st = std::max(st, max2 + i + 1);
+            st = std::max(st, max1 + i - M * 2 + 2);
+
+            res = std::min(res, (M - 1 - i) * 2 + 1 + st);
+            
+            if(i + 1 < M) {
+                ms1.erase(ms1.find(A[0][i] + i));
+                ms1.erase(ms1.find(A[0][i + 1] + i + 1));
+                ms2.erase(ms2.find(A[1][i + 1] - i - 1));
+                t = std::max(t, A[0][i]) + 1;
+                t = std::max(t, A[0][i + 1]) + 1;
+                t = std::max(t, A[1][i + 1]) + 1;
+                if(i + 1 == M - 1) {
+                    res = std::min(res, t);
+                }
+            }
+        }
+        return res;
+    };
+
+    int64_t ans = std::min(solve1(), solve2());
+    
+    std::cout << ans << '\n';
 }
 
 int main() {
-    ios::sync_with_stdio(false);        // de-sync with c stream
-    cin.tie(0);                         // disable flushing of std::cout
+    std::ios_base::sync_with_stdio(false);
+    std::cin.tie(0);
     
-    int t = 0;
-    cin >> t;
-    while(t--) {
+    int T;
+    std::cin >> T;
+    while(T--) {
         run_case();
     }
 }

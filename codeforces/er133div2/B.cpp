@@ -1,38 +1,40 @@
-#include <algorithm>
-#include <array>
-#include <cmath>
 #include <iostream>
+#include <utility>
+#include <cassert>
+#include <algorithm>
+#include <cmath>
+#include <array>
+#include <string>
 #include <vector>
-
-using namespace std;
+#include <numeric>
 
 void run_case() {
     int N;
-    cin >> N;
+    std::cin >> N;
 
-    vector<int> permutation(N, 0);
+    std::vector<int> now(N, 0);
+
+    std::iota(now.begin(), now.end(), 1);
+
+    std::cout << N << '\n';
     for(int i = 0; i < N; i++) {
-        permutation[i] = i + 1;
-    }
-
-    cout << N << '\n';
-    for(int i = 0, k = N - 1; i < N; i++) {
-        for(int j = 0; j < N; j++) {
-            cout << permutation[j] << " \n"[j == N - 1];
+        if(i) {
+            std::swap(now[i], now[i - 1]);
         }
 
-        swap(permutation[k], permutation[k - 1]);
-        k--;
+        for(int j = 0; j < N; j++) {
+            std::cout << now[j] << " \n"[j == N - 1];
+        }
     }
 }
 
 int main() {
-    ios::sync_with_stdio(false);        // de-sync with c stream
-    cin.tie(0);                         // disable flushing of std::cout
+    std::ios_base::sync_with_stdio(false);
+    std::cin.tie(0);
     
-    int t = 0;
-    cin >> t;
-    while(t--) {
+    int T;
+    std::cin >> T;
+    while(T--) {
         run_case();
     }
 }

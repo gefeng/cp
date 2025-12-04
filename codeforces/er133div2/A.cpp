@@ -1,37 +1,37 @@
-#include <algorithm>
-#include <array>
-#include <cmath>
 #include <iostream>
+#include <utility>
+#include <cassert>
+#include <algorithm>
+#include <cmath>
+#include <array>
+#include <string>
 #include <vector>
-
-using namespace std;
 
 void run_case() {
     int N;
-    cin >> N;
+    std::cin >> N;
+
+    int ans = 0;
+    if(N % 3 == 0) {
+        ans = N / 3;
+    } else {
+        ans = N / 3 + 1;
+    }
 
     if(N == 1) {
-        cout << 2 << '\n';
-    } else if(N == 2 || N == 3) {
-        cout << 1 << '\n';
-    } else {
-        if(N % 3 == 1) {
-            cout << (2 + (N - 4) / 3) << '\n';
-        } else if(N % 3 == 2) {
-            cout << (1 + (N - 1) / 3) << '\n';
-        } else {
-            cout << (N / 3) << '\n';
-        }
+        ans = 2;
     }
+
+    std::cout << ans << '\n';
 }
 
 int main() {
-    ios::sync_with_stdio(false);        // de-sync with c stream
-    cin.tie(0);                         // disable flushing of std::cout
+    std::ios_base::sync_with_stdio(false);
+    std::cin.tie(0);
     
-    int t = 0;
-    cin >> t;
-    while(t--) {
+    int T;
+    std::cin >> T;
+    while(T--) {
         run_case();
     }
 }
