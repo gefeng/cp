@@ -1,41 +1,38 @@
 #include <iostream>
+#include <utility>
 #include <cassert>
 #include <algorithm>
 #include <cmath>
 #include <array>
-#include <vector>
 #include <string>
-
-using namespace std;
+#include <vector>
 
 void run_case() {
-    string S1, S2;
-    cin >> S1 >> S2;
-
-    array<int, 26> cnt{0};
-    for(char c : S1) {
-        cnt[c - 'a']++;
-    }
-    for(char c : S2) {
-        cnt[c - 'a']++;
+    std::string S, T;
+    std::cin >> S >> T;
+    
+    std::array<int, 26> freq = {};
+    for(int i = 0; i < 2; i++) {
+        freq[S[i] - 'a'] += 1;
+        freq[T[i] - 'a'] += 1;
     }
 
-    int tot = 0;
+    int cnt = 0;
     for(int i = 0; i < 26; i++) {
-        if(cnt[i]) {
-            tot++;
+        if(freq[i]) {
+            cnt += 1;
         }
     }
 
-    cout << max(0, tot - 1) << '\n';
+    std::cout << cnt - 1 << '\n';
 }
 
 int main() {
-    ios_base::sync_with_stdio(false);
-    cin.tie(0);
+    std::ios_base::sync_with_stdio(false);
+    std::cin.tie(0);
     
     int T;
-    cin >> T;
+    std::cin >> T;
     while(T--) {
         run_case();
     }

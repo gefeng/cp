@@ -1,35 +1,32 @@
 #include <iostream>
+#include <utility>
 #include <cassert>
 #include <algorithm>
 #include <cmath>
 #include <array>
+#include <string>
 #include <vector>
-
-using namespace std;
 
 void run_case() {
     int N, M, SX, SY, D;
-    cin >> N >> M >> SX >> SY >> D;
+    std::cin >> N >> M >> SX >> SY >> D;
+
+    SX -= 1;
+    SY -= 1;
     
-    int d_top = SX - 1;
-    int d_bottom = N - SX;
-    int d_left = SY - 1;
-    int d_right = M - SY;
+    int d1 = std::min(SX, M - 1 - SY);
+    int d2 = std::min(SY, N - 1 - SX);
+    int d = std::max(d1, d2);
 
-    int ans = -1;
-    if((d_top > D && d_right > D) || (d_bottom > D && d_left > D)) {
-        ans = N + M - 2; 
-    }
-
-    cout << ans << '\n';
+    std::cout << (d <= D ? -1 : N + M - 2) << '\n';
 }
 
 int main() {
-    ios_base::sync_with_stdio(false);
-    cin.tie(0);
+    std::ios_base::sync_with_stdio(false);
+    std::cin.tie(0);
     
     int T;
-    cin >> T;
+    std::cin >> T;
     while(T--) {
         run_case();
     }
