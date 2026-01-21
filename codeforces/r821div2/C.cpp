@@ -1,4 +1,5 @@
 #include <iostream>
+#include <utility>
 #include <cassert>
 #include <algorithm>
 #include <cmath>
@@ -6,52 +7,54 @@
 #include <string>
 #include <vector>
 
-using namespace std;
-
 void run_case() {
     int N;
-    cin >> N;
+    std::cin >> N;
 
-    vector<int> A(N, 0);
+    std::vector<int> A(N);
     for(int i = 0; i < N; i++) {
-        cin >> A[i];
+        std::cin >> A[i];
     }
 
     if(N == 1) {
-        cout << 0 << '\n';
+        std::cout << 0 << '\n';
         return;
     }
 
-    vector<pair<int, int>> seq; 
+    std::vector<std::pair<int, int>> ans;
+    ans.emplace_back(0, N - 1);
 
-    seq.emplace_back(0, N - 1);
-    if((A[0] + A[N - 1]) & 1) {
-        A[N - 1] = A[0];
+    if(A[0] % 2 == 0) {
+        for(int i = 1; i < N - 1; i++) {
+            if(A[i] % 2 == 0) {
+                ans.emplace_back(i, N - 1);
+            } else {
+                ans.emplace_back(0, i);
+            }
+        }
     } else {
-        A[0] = A[N - 1];
-    }
-
-    for(int i = 1; i < N - 1; i++) {
-        if((A[i] + A[0]) & 1) {
-            seq.emplace_back(0, i);
-        } else {
-            seq.emplace_back(i, N - 1);
+        for(int i = 1; i < N - 1; i++) {
+            if(A[i] % 2 == 0) {
+                ans.emplace_back(0, i);
+            } else {
+                ans.emplace_back(i, N - 1);
+            }
         }
     }
 
-    int m = seq.size();
-    cout << m << '\n';
-    for(int i = 0; i < m; i++) {
-        cout << seq[i].first + 1 << ' ' << seq[i].second + 1 << '\n';
+    int size = ans.size();
+    std::cout << size << '\n';
+    for(auto [i, j] : ans) {
+        std::cout << i + 1 << ' ' << j + 1 << '\n';
     }
 }
 
 int main() {
-    ios_base::sync_with_stdio(false);
-    cin.tie(0);
+    std::ios_base::sync_with_stdio(false);
+    std::cin.tie(0);
     
     int T;
-    cin >> T;
+    std::cin >> T;
     while(T--) {
         run_case();
     }

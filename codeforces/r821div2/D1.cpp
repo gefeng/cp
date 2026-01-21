@@ -1,4 +1,5 @@
 #include <iostream>
+#include <utility>
 #include <cassert>
 #include <algorithm>
 #include <cmath>
@@ -6,67 +7,56 @@
 #include <string>
 #include <vector>
 
-using namespace std;
-using LL = long long;
+constexpr int64_t INF = static_cast<int64_t>(2e18);
 
 void run_case() {
     int N, X, Y;
-    cin >> N >> X >> Y;
-   
-    string A, B;
-    cin >> A >> B;
+    std::cin >> N >> X >> Y;
 
-    int cnt_1 = 0;
-    int cnt_2 = 0;
+    std::string S, T;
+    std::cin >> S >> T;
+
+    int cnt = 0;
     for(int i = 0; i < N; i++) {
-        cnt_1 += A[i] - '0';
-        cnt_2 += B[i] - '0';
+        if(S[i] != T[i]) {
+            cnt += 1;
+        }
     }
 
-    if(abs(cnt_1 - cnt_2) & 1) {
-        cout << -1 << '\n';
+    if(cnt % 2 == 1) {
+        std::cout << -1 << '\n';
         return;
     }
 
-    LL ans = 0LL;
+    if(cnt > 2) {
+        std::cout << static_cast<int64_t>(Y) * (cnt / 2) << '\n';
+        return;
+    }
+
     int pre = -1;
-    int cnt = 0;
-    int adj = 0;
     for(int i = 0; i < N; i++) {
-        if(A[i] == B[i]) {
-            continue;
-        }
-
-        if(pre == -1) {
-            pre = i;
-        } else {
-            if(pre + 1 == i) {
-                adj++;
+        if(S[i] != T[i]) {
+            if(pre != -1) {
+                if(pre + 1 == i) {
+                    std::cout << std::min(X, Y * 2) << '\n';
+                } else {
+                    std::cout << Y << '\n';
+                }
+                return;
             }
-            pre = -1;
+            pre = i;
         }
-        cnt++;
     }
 
-    if(cnt == 2) {
-        if(X < 2 * Y) {
-            ans = adj ? X : Y;
-        } else {
-            ans = adj ? 2 * Y : Y;
-        }
-    } else {
-        ans = (LL)cnt / 2LL * (LL)Y;
-    }
-
-    cout << ans << '\n';
+    std::cout << 0 << '\n';
 }
 
 int main() {
-    ios_base::sync_with_stdio(false);
-    cin.tie(0);
+    std::ios_base::sync_with_stdio(false);
+    std::cin.tie(0);
     
     int T;
-    cin >> T;
+    std::cin >> T;
     while(T--) {
         run_case();
     }

@@ -1,44 +1,38 @@
 #include <iostream>
+#include <utility>
 #include <cassert>
 #include <algorithm>
 #include <cmath>
 #include <array>
 #include <string>
 #include <vector>
-
-using namespace std;
-using LL = long long;
+#include <numeric>
 
 void run_case() {
-    int N, K;
-    cin >> N >> K;
+    int K, N;
+    std::cin >> N >> K;
 
-    vector<LL> A(N, 0LL);
+    std::vector<int> A(N);
     for(int i = 0; i < N; i++) {
-        cin >> A[i];
+        std::cin >> A[i];
     }
 
-    LL ans = 0LL;
-    for(int i = 0; i < K; i++) {
-        LL max_v = 0LL;
-        for(int j = 1; j <= N; j++) {
-            if(j % K == i) {
-                max_v = max(max_v, A[j - 1]);
-            }
-        }
-
-        ans += max_v;
+    std::vector<int> max_v(K, 0);
+    for(int i = 0; i < N; i++) {
+        max_v[i % K] = std::max(max_v[i % K], A[i]);
     }
 
-    cout << ans << '\n';
+    int64_t ans = std::accumulate(max_v.begin(), max_v.end(), static_cast<int64_t>(0));
+
+    std::cout << ans << '\n';
 }
 
 int main() {
-    ios_base::sync_with_stdio(false);
-    cin.tie(0);
+    std::ios_base::sync_with_stdio(false);
+    std::cin.tie(0);
     
     int T;
-    cin >> T;
+    std::cin >> T;
     while(T--) {
         run_case();
     }

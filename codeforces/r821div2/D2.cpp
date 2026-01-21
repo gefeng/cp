@@ -1,4 +1,5 @@
 #include <iostream>
+#include <utility>
 #include <cassert>
 #include <algorithm>
 #include <cmath>
@@ -6,91 +7,90 @@
 #include <string>
 #include <vector>
 
-using namespace std;
-using LL = long long;
+constexpr int64_t INF = static_cast<int64_t>(2e18);
 
 void run_case() {
-    int N, X, Y;
-    cin >> N >> X >> Y;
-   
-    string A, B;
-    cin >> A >> B;
+    int N;
+    int64_t X, Y;
+    std::cin >> N >> X >> Y;
 
-    // either do a sequence of X or just do Y
-    vector<int> d; 
-    d.reserve(N);
+    std::string S, T;
+    std::cin >> S >> T;
+
+    int cnt = 0;
     for(int i = 0; i < N; i++) {
-        if(A[i] != B[i]) {
-            d.push_back(i);
-        } 
+        if(S[i] != T[i]) {
+            cnt += 1;
+        }
     }
 
-    int n = d.size();
-    if(n & 1) {
-        cout << -1 << '\n';
+    if(cnt % 2 == 1) {
+        std::cout << -1 << '\n';
         return;
     }
 
-    if(X >= Y) {
-        LL ans = 0LL;
+    if(Y <= X) {
+        if(cnt > 2) {
+            std::cout << Y * (cnt / 2) << '\n';
+            return;
+        }
+
         int pre = -1;
-        int cnt = 0;
-        int adj = 0;
         for(int i = 0; i < N; i++) {
-            if(A[i] == B[i]) {
-                continue;
-            }
-
-            if(pre == -1) {
+            if(S[i] != T[i]) {
+                if(pre != -1) {
+                    if(pre + 1 == i) {
+                        std::cout << std::min(X, Y * 2) << '\n';
+                    } else {
+                        std::cout << Y << '\n';
+                    }
+                    return;
+                }
                 pre = i;
-            } else {
-                if(pre + 1 == i) {
-                    adj++;
-                }
-                pre = -1;
-            }
-            cnt++;
-        }
-
-        if(cnt == 2) {
-            if(X < 2 * Y) {
-                ans = adj ? X : Y;
-            } else {
-                ans = adj ? 2 * Y : Y;
-            }
-        } else {
-            ans = (LL)cnt / 2LL * (LL)Y;
-        }
-
-        cout << ans << '\n';
-    } else {
-        vector<LL> dp(n + 1, -1LL);
-        dp[0] = 0LL; 
-        dp[1] = 0LL; 
-        for(int i = 2; i <= n; i++) {
-            if(i & 1) {
-                dp[i] = min(dp[i - 2] + 1LL * X * (d[i - 1] - d[i - 2]), dp[i - 1]);
-                if(d[i - 1] - d[i - 2] == 1) {
-                    dp[i] = min(dp[i], dp[i - 2] + 1LL * Y);        
-                }
-            } else {
-                dp[i] = min(dp[i - 2] + 1LL * X * (d[i - 1] - d[i - 2]), dp[i - 1] + Y);
-                if(d[i - 1] - d[i - 2] == 1) {
-                    dp[i] = min(dp[i], dp[i - 2] + 1LL * Y);        
-                }
             }
         }
-
-        cout << dp[n] << '\n';
+        std::cout << 0 << '\n';
+        return;
     }
+
+    std::vector<int> a;
+    for(int i = 0; i < N; i++) {
+        if(S[i] != T[i]) {
+            a.push_back(i);
+        }
+    }
+
+    int size = a.size();
+    std::vector<int64_t> cost(size + 1, 0);
+    for(int i = 2; i <= size; i++) {
+        cost[i] = cost[i - 2] + (a[i - 1] - a[i - 2]) * X;
+    }
+
+    std::vector<int64_t> dp(size + 1, INF);
+    dp[0] = 0;
+    
+    int64_t min_v = 0;
+    for(int i = 1; i <= size; i++) {
+        if(i % 2 == 1) {
+            continue;
+        }
+
+        dp[i] = std::min(dp[i], dp[i - 2] + std::min(Y, (a[i - 1] - a[i - 2]) * X));
+
+        for(int j = i - 2; j >= 0; j -= 2) {
+            dp[i] = std::min(dp[i], dp[j] + Y + cost[i - 1] - cost[j + 1]);
+        }
+    }
+
+    std::cout << dp[size] << '\n';
 }
 
 int main() {
-    ios_base::sync_with_stdio(false);
-    cin.tie(0);
+    std::ios_base::sync_with_stdio(false);
+    std::cin.tie(0);
     
     int T;
-    cin >> T;
+    std::cin >> T;
     while(T--) {
         run_case();
     }
