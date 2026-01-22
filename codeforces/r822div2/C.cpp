@@ -1,52 +1,47 @@
 #include <iostream>
+#include <utility>
 #include <cassert>
 #include <algorithm>
 #include <cmath>
 #include <array>
 #include <string>
 #include <vector>
-
-using namespace std;
-using LL = long long;
+#include <set>
 
 void run_case() {
     int N;
-    cin >> N;
+    std::cin >> N;
 
-    string S;
-    cin >> S;
+    std::string S;
+    std::cin >> S;
 
-    LL ans = 0LL;
-    vector<LL> cost(N + 1, 0LL);
-
-    for(int i = 1; i <= N; i++) {
-        cost[i] = i;
-    }
-
-    for(int i = 1; i <= N; i++) {
-        for(int j = i; j <= N; j += i) {
-            if(S[j - 1] == '1') {
-                break; 
+    std::vector<int> removed(N + 1, 0);
+    int k = 1;
+    int64_t ans = 0;
+    while(k <= N) {
+        for(int i = k; i <= N; i += k) {
+            if(removed[i]) {
+                continue;
             }
-            cost[j] = min(cost[j], (LL)i);
+            if(S[i - 1] == '0') {
+                ans += k; 
+                removed[i] = 1;
+            } else { 
+                break;
+            }
         }
+        k += 1;
     }
 
-    for(int i = 1; i <= N; i++) {
-        if(S[i - 1] == '0') {
-            ans += cost[i];
-        }
-    }
-
-    cout << ans << '\n';
+    std::cout << ans << '\n';
 }
 
 int main() {
-    ios_base::sync_with_stdio(false);
-    cin.tie(0);
+    std::ios_base::sync_with_stdio(false);
+    std::cin.tie(0);
     
     int T;
-    cin >> T;
+    std::cin >> T;
     while(T--) {
         run_case();
     }

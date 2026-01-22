@@ -1,4 +1,5 @@
 #include <iostream>
+#include <utility>
 #include <cassert>
 #include <algorithm>
 #include <cmath>
@@ -6,36 +7,33 @@
 #include <string>
 #include <vector>
 
-using namespace std;
-using LL = long long;
-
-const LL INF = (LL)1e18;
+constexpr int INF = static_cast<int>(2e9) + 10;
 
 void run_case() {
     int N;
-    cin >> N;
+    std::cin >> N;
 
-    vector<int> A(N, 0);
+    std::vector<int> A(N);
     for(int i = 0; i < N; i++) {
-        cin >> A[i];
+        std::cin >> A[i];
     }
 
-    sort(A.begin(), A.end());
-    
-    LL ans = INF;
+    std::ranges::sort(A);
+
+    int ans = INF;
     for(int i = 1; i < N - 1; i++) {
-        ans = min(ans, 1LL * A[i + 1] - A[i] + A[i] - A[i - 1]);
+        ans = std::min(ans, A[i + 1] - A[i - 1]);
     }
 
-    cout << ans << '\n';
+    std::cout << ans << '\n';
 }
 
 int main() {
-    ios_base::sync_with_stdio(false);
-    cin.tie(0);
+    std::ios_base::sync_with_stdio(false);
+    std::cin.tie(0);
     
     int T;
-    cin >> T;
+    std::cin >> T;
     while(T--) {
         run_case();
     }
