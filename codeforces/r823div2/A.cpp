@@ -1,4 +1,5 @@
 #include <iostream>
+#include <utility>
 #include <cassert>
 #include <algorithm>
 #include <cmath>
@@ -6,35 +7,36 @@
 #include <string>
 #include <vector>
 
-using namespace std;
-
 void run_case() {
     int N, C;
-    cin >> N >> C;
+    std::cin >> N >> C;
 
-    array<int, 101> cnt{0}; 
+    std::vector<int> A(N);
     for(int i = 0; i < N; i++) {
-        int X;
-        cin >> X;
-        cnt[X]++;
+        std::cin >> A[i];
     }
+
+    std::ranges::sort(A);
 
     int ans = 0;
-    for(int i = 0; i <= 100; i++) {
-        if(cnt[i]) {
-            ans += cnt[i] > C ? C : cnt[i];
+    for(int i = 0; i < N; ) {
+        int j = i;
+        while(i < N && A[i] == A[j]) {
+            i += 1;
         }
+
+        ans += std::min(i - j, C);
     }
 
-    cout << ans << '\n';
+    std::cout << ans << '\n';
 }
 
 int main() {
-    ios_base::sync_with_stdio(false);
-    cin.tie(0);
+    std::ios_base::sync_with_stdio(false);
+    std::cin.tie(0);
     
     int T;
-    cin >> T;
+    std::cin >> T;
     while(T--) {
         run_case();
     }

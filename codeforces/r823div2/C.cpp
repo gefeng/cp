@@ -1,4 +1,5 @@
 #include <iostream>
+#include <utility>
 #include <cassert>
 #include <algorithm>
 #include <cmath>
@@ -6,44 +7,34 @@
 #include <string>
 #include <vector>
 
-using namespace std;
-
 void run_case() {
-    string S;
-    cin >> S;
+    std::string S;
+    std::cin >> S;
 
-    int n = S.length();
-    string ans = "";
-     
-    array<int, 10> cnt{0};
-    int min_d = 10;
-    for(int i = n - 1; i >= 0; i--) {
-        int c = S[i] - '0';
-        min_d = min(min_d, c);
+    int n = S.size();
+    std::string ans = "";
+    std::string free = "";
 
-        if(c == min_d) {
-            cnt[c]++;
-        } else {
-            cnt[min(9, c + 1)]++;
+    for(int i = 0; i < n; i++) {
+        while(!ans.empty() && ans.back() > S[i]) {
+            free.push_back(std::min('9', static_cast<char>(ans.back() + 1)));
+            ans.pop_back();
         }
+        ans.push_back(S[i]);
     }
 
-    for(int i = 0; i < 10; i++) {
-        while(cnt[i]) {
-            ans.push_back((char)(i + '0'));
-            cnt[i]--;
-        } 
-    }
+    ans.append(free);
+    std::ranges::sort(ans);
 
-    cout << ans << '\n';
+    std::cout << ans << '\n';
 }
 
 int main() {
-    ios_base::sync_with_stdio(false);
-    cin.tie(0);
+    std::ios_base::sync_with_stdio(false);
+    std::cin.tie(0);
     
     int T;
-    cin >> T;
+    std::cin >> T;
     while(T--) {
         run_case();
     }
