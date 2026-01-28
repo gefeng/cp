@@ -1,4 +1,5 @@
 #include <iostream>
+#include <utility>
 #include <cassert>
 #include <algorithm>
 #include <cmath>
@@ -6,54 +7,45 @@
 #include <string>
 #include <vector>
 
-using namespace std;
+int dfs(std::vector<std::vector<int>>& G, int t, int v, int depth, int& cnt) {
+    int max_d = 0;
+    for(int u : G[v]) {
+        max_d = std::max(max_d, dfs(G, t, u, depth + 1, cnt) + 1); 
+    }
 
-pair<int, int> dfs(vector<vector<int>>& G, int max_depth, int cur) {
-    int ret_d = 0;
-    int ret_o = 0;
+    if(max_d == t - 1 && depth > 1) {
+        cnt += 1;
+        return -1;
+    }
 
-    for(int c : G[cur]) {
-        pair<int, int> res = dfs(G, max_depth, c);
-
-        if(cur != 0 && res.first == max_depth) {
-            ret_o++;
-        } else {
-            ret_d = max(ret_d, res.first);
-        }
-
-        ret_o += res.second;
-    } 
-
-    return {ret_d + 1, ret_o};
+    return max_d;
 }
 
 void run_case() {
     int N, K;
-    cin >> N >> K;
+    std::cin >> N >> K;
 
-    vector<int> P(N, -1);
+    std::vector<std::vector<int>> G(N);
     for(int i = 1; i < N; i++) {
-        cin >> P[i];
-        P[i]--;
+        int P;
+        std::cin >> P;
+        P -= 1;
+        G[P].push_back(i);
     }
 
-    vector<vector<int>> G(N);
-    for(int i = 0; i < N; i++) {
-        int p = P[i];
-
-        if(p != -1) {
-            G[p].push_back(i);
-        }
-    }
+    auto check = [&](int t) {
+        int cnt = 0;
+        dfs(G, t, 0, 0, cnt);
+        return cnt <= K;
+    };
 
     int lo = 1;
-    int hi = 200000;
-    int ans = 0;
+    int hi = N - 1;
+    int ans = -1;
     while(lo <= hi) {
         int mid = (lo + hi) >> 1;
-
-        int tot = dfs(G, mid, 0).second;
-        if(tot <= K) {
+        
+        if(check(mid)) {
             ans = mid;
             hi = mid - 1;
         } else {
@@ -61,15 +53,15 @@ void run_case() {
         }
     }
 
-    cout << ans << '\n';
+    std::cout << ans << '\n';
 }
 
 int main() {
-    ios_base::sync_with_stdio(false);
-    cin.tie(0);
+    std::ios_base::sync_with_stdio(false);
+    std::cin.tie(0);
     
     int T;
-    cin >> T;
+    std::cin >> T;
     while(T--) {
         run_case();
     }

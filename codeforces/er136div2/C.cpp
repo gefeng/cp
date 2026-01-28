@@ -1,4 +1,5 @@
 #include <iostream>
+#include <utility>
 #include <cassert>
 #include <algorithm>
 #include <cmath>
@@ -6,56 +7,65 @@
 #include <string>
 #include <vector>
 
-using namespace std;
-using LL = long long;
+constexpr int64_t MOD = static_cast<int64_t>(998244353);
 
-const LL MOD = 998244353;
+int64_t q_pow(int64_t x, int64_t y) {
+    int64_t res = 1;
+    while(y) {
+        if(y & 1) {
+            res *= x;
+            res %= MOD;
+        }
+        x *= x;
+        x %= MOD;
+        y >>= 1;
+    }
+    return res;
+}
 
 void run_case() {
     int N;
-    cin >> N;
+    std::cin >> N;
+    
+    if(N == 2) {
+        std::cout << 1 << ' ' << 0 << ' ' << 1 << '\n';
+        return;
+    }
+    
+    
+    std::vector<int64_t> fact(N + 1, 1);
+    std::vector<int64_t> invf(N + 1, 1);
+    
+    for(int i = 1; i <= N; i++) {
+        fact[i] = fact[i - 1] * i % MOD;
+        invf[i] = q_pow(fact[i], MOD - 2);
+    }
 
-    array<array<LL, 61>, 61> comb{{{0}}};
-    comb[0][0] = 1LL;
-    for(int i = 1; i <= 60; i++) {
-        comb[i][0] = 1LL;
-        comb[i][i] = 1LL;
-
-        for(int j = 1; j < i; j++) {
-            comb[i][j] = comb[i - 1][j - 1] + comb[i - 1][j];
-            comb[i][j] %= MOD;
+    int64_t a = 0;
+    int64_t b = 0;
+    for(int i = 0, m = N, n = N / 2; i < N / 2; i++, m -= 2, n -= 1) {
+        if(i % 2 == 0) {
+            a += (fact[m - 1] * invf[n - 1] % MOD) * invf[m - n] % MOD;
+            a %= MOD;
+        } else {
+            if(n - 2 >= 0) {
+                a += (fact[m - 2] * invf[n - 2] % MOD) * invf[m - n] % MOD;
+                a %= MOD;
+            }
         }
     }
-   
-    vector<LL> dp_a(N + 1, 0LL);
-    vector<LL> dp_b(N + 1, 0LL);
-    vector<LL> dp_c(N + 1, 0LL);
-    dp_a[2] = 1LL; 
-    dp_b[2] = 0LL;
-    dp_c[2] = 1LL;
+    b = (((fact[N] * invf[N / 2] % MOD) * invf[N / 2] % MOD) - a + MOD) % MOD;
+    b = (b - 1 + MOD) % MOD;
 
-    for(int i = 4; i <= N; i += 2) {
-        dp_a[i] = comb[i - 1][i / 2 - 1];
-        dp_a[i] += dp_b[i - 2];
-        dp_a[i] %= MOD;
-
-        dp_b[i] = comb[i - 2][i / 2 - 2];
-        dp_b[i] += dp_a[i - 2];
-        dp_b[i] %= MOD;
-
-        dp_c[i] += comb[i][i / 2] - ((dp_a[i] + dp_b[i]) % MOD) + MOD;
-        dp_c[i] %= MOD;
-    }
-
-    cout << dp_a[N] << ' ' << dp_b[N] << ' ' << dp_c[N] << '\n';
+    std::cout << a << ' ' << b << ' ' << 1 << '\n';
 }
 
 int main() {
-    ios_base::sync_with_stdio(false);
-    cin.tie(0);
+    std::ios_base::sync_with_stdio(false);
+    std::cin.tie(0);
     
     int T;
-    cin >> T;
+    std::cin >> T;
     while(T--) {
         run_case();
     }
