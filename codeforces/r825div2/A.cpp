@@ -1,4 +1,5 @@
 #include <iostream>
+#include <utility>
 #include <cassert>
 #include <algorithm>
 #include <cmath>
@@ -6,66 +7,61 @@
 #include <string>
 #include <vector>
 
-using namespace std;
-
 void run_case() {
     int N;
-    cin >> N;
+    std::cin >> N;
+
+    std::vector<int> A(N);
+    std::vector<int> B(N);
     
-    vector<int> A(N, 0);
-    vector<int> B(N, 0);
-    int cnt_a_1 = 0;
-    int cnt_b_1 = 0;
     for(int i = 0; i < N; i++) {
-        cin >> A[i];
-        cnt_a_1 += A[i];
+        std::cin >> A[i];
     }
-
-    for(int i = 0; i < N; i++) {
-        cin >> B[i];
-        cnt_b_1 += B[i];
-    }
-
     
-    if(cnt_a_1 == cnt_b_1) {
-        cout << (A == B ? 0 : 1) << '\n';
-        return;
+    for(int i = 0; i < N; i++) {
+        std::cin >> B[i];
     }
 
-    if(cnt_a_1 < cnt_b_1) {
-        int cnt = 0;
-        int d = cnt_b_1 - cnt_a_1;
-        for(int i = 0; i < N && d; i++) {
-            if(A[i] == 0 && B[i] == 1) {
-                d--;
-                A[i] = 1;
-                cnt++;
-            } 
-        }
-        
-        cnt += A == B ? 0 : 1;
-        cout << cnt << '\n';
-    } else {
-        int cnt = 0;
-        int d = cnt_a_1 - cnt_b_1;
-        for(int i = 0; i < N && d; i++) {
-            if(A[i] == 1 && B[i] == 0) {
-                d--;
-                A[i] = 0;
-                cnt++;
+    int c0 = 0;
+    int c1 = 0;
+    for(int i = 0; i < N; i++) {
+        if(A[i] != B[i]) {
+            if(A[i] == 0) {
+                c0 += 1;
+            } else {
+                c1 += 1;
             }
         }
-        cnt += A == B ? 0 : 1;
-        cout << cnt << '\n';
     }
+
+    int ans = 0;
+    for(int i = 0; i < N; i++) {
+        if(A[i] != B[i]) {
+            if(B[i] == 0) {
+                if(c0) {
+                    c0 -= 1;
+                    ans = 1;
+                }
+            } else {
+                if(c1) {
+                    c1 -= 1;
+                    ans = 1;
+                }
+            }
+        }
+    }
+
+    ans += std::max(c0, c1);
+
+    std::cout << ans << '\n';
 }
 
 int main() {
-    ios_base::sync_with_stdio(false);
-    cin.tie(0);
+    std::ios_base::sync_with_stdio(false);
+    std::cin.tie(0);
     
     int T;
-    cin >> T;
+    std::cin >> T;
     while(T--) {
         run_case();
     }

@@ -1,4 +1,5 @@
 #include <iostream>
+#include <utility>
 #include <cassert>
 #include <algorithm>
 #include <cmath>
@@ -6,46 +7,45 @@
 #include <string>
 #include <vector>
 
-using namespace std;
-
-int gcd(int a, int b) {
+int64_t gcd(int64_t a, int64_t b) {
     if(a == 0) {
         return b;
     }
     return gcd(b % a, a);
 }
 
-int lcm(int a, int b) {
-    int g = gcd(a, b);
-    return a * b / g;
+int64_t lcm(int64_t a, int64_t b) {
+    return a * b / gcd(a, b);
 }
 
 void run_case() {
     int N;
-    cin >> N;
+    std::cin >> N;
 
-    vector<int> A(N, 0);
+    std::vector<int> A(N);
     for(int i = 0; i < N; i++) {
-        cin >> A[i];
+        std::cin >> A[i];
     }
 
-    bool exist = true;
-    for(int i = 2; i < N; i++) {
-        if(gcd(lcm(A[i - 2], A[i - 1]), lcm(A[i - 1], A[i])) > A[i - 1]) {
-            exist = false;
-            break;
+    int64_t pre = A[0];
+    for(int i = 1; i < N; i++) {
+        int64_t now = lcm(A[i - 1], A[i]);
+        if(gcd(now, pre) != A[i - 1]) {
+            std::cout << "NO" << '\n';
+            return;
         }
+        pre = now;
     }
 
-    cout << (exist ? "Yes" : "No") << '\n';
+    std::cout << "YES" << '\n';
 }
 
 int main() {
-    ios_base::sync_with_stdio(false);
-    cin.tie(0);
+    std::ios_base::sync_with_stdio(false);
+    std::cin.tie(0);
     
     int T;
-    cin >> T;
+    std::cin >> T;
     while(T--) {
         run_case();
     }
