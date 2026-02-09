@@ -1,43 +1,33 @@
 #include <iostream>
+#include <utility>
 #include <cassert>
 #include <algorithm>
 #include <cmath>
 #include <array>
 #include <string>
 #include <vector>
-#include <set>
-
-using namespace std;
 
 void run_case() {
     int N;
-    cin >> N;
-
-    array<bool, 10> is_not{false};
+    std::cin >> N;
+    
+    std::vector<int> A(N);
     for(int i = 0; i < N; i++) {
-        int X;
-        cin >> X;
-        is_not[X] = true;
+        std::cin >> A[i];
     }
 
-    int ans = 0;
-    for(int i = 0; i < 10; i++) {
-        for(int j = i + 1; j < 10; j++) {
-            if(!is_not[i] && !is_not[j]) {
-                ans += 6;
-            }
-        }
-    }
+    int n = 10 - N;
+    int ans = 3 * (n * (n - 1) / 2) * 2;
 
-    cout << ans << '\n';
+    std::cout << ans << '\n';
 }
 
 int main() {
-    ios_base::sync_with_stdio(false);
-    cin.tie(0);
+    std::ios_base::sync_with_stdio(false);
+    std::cin.tie(0);
     
     int T;
-    cin >> T;
+    std::cin >> T;
     while(T--) {
         run_case();
     }

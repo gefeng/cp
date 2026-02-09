@@ -1,4 +1,5 @@
 #include <iostream>
+#include <utility>
 #include <cassert>
 #include <algorithm>
 #include <cmath>
@@ -6,51 +7,51 @@
 #include <string>
 #include <vector>
 
-using namespace std;
+constexpr int INF = static_cast<int>(2e9) + 10;
 
 void run_case() {
-    int n;
-    cin >> n;
+    int N;
+    std::cin >> N;
 
-    string s;
-    cin >> s;
+    std::string S;
+    std::cin >> S;
 
-    vector<int> a(n, 0);
-    for(int i = 0; i < n; i++) {
-        cin >> a[i];
+    std::vector<int> A(N);
+    for(int i = 0; i < N; i++) {
+        std::cin >> A[i];
     }
 
+    int pre = -1;
     int ans = 0;
-    for(int i = 0; i < n; ) {
-        if(s[i] == '0') {
-            i++;
-            continue;
-        }
-
+    for(int i = 0; i < N; ) {
         int j = i;
-        int min_v = a[i];
-        while(i < n && s[i] == '1') {
-            ans += a[i];
-            min_v = min(min_v, a[i]);
-            i++;
+        int min_v = INF;
+        while(i < N && S[i] == S[j]) {
+            if(S[j] == '1') {
+                ans += A[i];
+            }
+            min_v = std::min(min_v, A[i]);
+            i += 1;
         }
 
-        if(j && a[j - 1] > min_v) {
-            ans -= min_v;
-            ans += a[j - 1];
+        if(S[j] == '1') {
+            ans += std::max(0, pre - min_v);
+            pre = -1;
+        } else {
+            pre = A[i - 1];
         }
     }
 
-    cout << ans << '\n';
+    std::cout << ans << '\n';
 }
 
 int main() {
-    ios_base::sync_with_stdio(false);
-    cin.tie(0);
+    std::ios_base::sync_with_stdio(false);
+    std::cin.tie(0);
     
-    int t;
-    cin >> t;
-    while(t--) {
+    int T;
+    std::cin >> T;
+    while(T--) {
         run_case();
     }
 }

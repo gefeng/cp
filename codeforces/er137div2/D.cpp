@@ -1,51 +1,103 @@
 #include <iostream>
+#include <utility>
 #include <cassert>
 #include <algorithm>
 #include <cmath>
 #include <array>
 #include <string>
 #include <vector>
-
-using namespace std;
+#include <set>
 
 void run_case() {
     int N;
-    cin >> N;
-    string S;
-    cin >> S;
+    std::cin >> N;
+
+    std::string S;
+    std::cin >> S;
 
     int p = 0;
     while(p < N && S[p] == '0') {
-        p++;    
+        p += 1;
     }
     
-    string a = S.substr(p, N - p);
-    int m = a.length();
-    
-    string ans = a;
-    for(int t = 1; t <= min(10, m - 1); t++) {
-        string b = a.substr(0, m - t);
-        string c = a.substr(0, t);
+    if(p == N) {
+        std::cout << 0 << '\n';
+        return;
+    }
 
-        for(int i = 0; i < m - t; i++) {
-            if(a[i + t] != b[i]) {
-                c.push_back('1');
-            } else {
-                c.push_back(b[i]);
+    int l = p;
+    while(p < N && S[p] == '1') {
+        p += 1;
+    }
+    
+    if(p == N) {
+        std::cout << S.substr(l, N - l) << '\n';
+        return;
+    }
+
+    int r = p;
+    while(p < N && S[p] == '0') {
+        p += 1;
+    }
+
+    std::string a = S.substr(l, N - l);
+    std::string b = "";
+    if(r - l <= p - r) {
+        b = S.substr(l, N - r);
+    } else {
+        std::set<int> s;
+        int d = r - l - p + r;
+        int shift = 0;
+        for(int x = 0; x <= d; x++) {
+            s.insert(x);
+        }
+        for(int i = p; i < N; i++) {
+            if(S[i] == '1') {
+                continue;
+            }
+            std::vector<int> bad;
+            for(int x : s) {
+                if(S[i - r + l + x] == '0') {
+                    bad.push_back(x);
+                }
+            }
+            if(bad.size() == s.size()) {
+                continue;
+            }
+            for(int x : bad) {
+                s.erase(x);
             }
         }
 
-        if(c > ans) {
-            ans = c;
-        }
+        assert(!s.empty());
+        shift = *s.begin();
+        b = S.substr(l + shift, N - r);
     }
 
-    cout << (ans.empty() ? "0" : ans) << '\n';
+    for(int i = 0, j = a.size() - b.size(); i < b.size(); i++, j++) {
+        if(a[j] != b[i]) {
+            a[j] = '1';
+        }
+    }
+    
+    std::cout << a << '\n';
+
+    // 11111001000
+    //      11111
+    //
+    // 1111100011100
+    //      11110001
+    //      1110001
+
+    // 11111000110010111000 
+    //      11100011
+    //      1111000110
+    //      1111100011
 }
 
 int main() {
-    ios_base::sync_with_stdio(false);
-    cin.tie(0);
+    std::ios_base::sync_with_stdio(false);
+    std::cin.tie(0);
     
     run_case();
 }
