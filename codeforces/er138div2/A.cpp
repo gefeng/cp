@@ -1,4 +1,5 @@
 #include <iostream>
+#include <utility>
 #include <cassert>
 #include <algorithm>
 #include <cmath>
@@ -6,51 +7,28 @@
 #include <string>
 #include <vector>
 
-using namespace std;
-
 void run_case() {
     int N, M;
-    cin >> N >> M;
+    std::cin >> N >> M;
 
-    vector<bool> row(N, false);
-    vector<bool> col(N, false);
-    vector<pair<int, int>> R(M, {0, 0});
-
+    std::vector<std::pair<int, int>> A(M);
     for(int i = 0; i < M; i++) {
-        int X, Y;
-        cin >> X >> Y;
-
-        R[i].first = X - 1;
-        R[i].second = Y - 1;
-        row[X - 1] = true;
-        col[Y - 1] = true;
+        std::cin >> A[i].first >> A[i].second;
     }
 
-    for(auto& r : R) {
-        for(int c = 0; c < N; c++) {
-            if(!col[c]) {
-                cout << "YES" << '\n';
-                return;
-            }
-        }
-
-        for(int r = 0; r < N; r++) {
-            if(!row[r]) {
-                cout << "YES" << '\n';
-                return;
-            }
-        }
+    if(M == 1) {
+        std::cout << (N == 1 ? "NO" : "YES") << '\n';
+    } else {
+        std::cout << (M < N ? "YES" : "NO") << '\n';
     }
-
-    cout << "NO" << '\n';
 }
 
 int main() {
-    ios_base::sync_with_stdio(false);
-    cin.tie(0);
+    std::ios_base::sync_with_stdio(false);
+    std::cin.tie(0);
     
     int T;
-    cin >> T;
+    std::cin >> T;
     while(T--) {
         run_case();
     }

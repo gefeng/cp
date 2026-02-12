@@ -1,60 +1,64 @@
 #include <iostream>
+#include <utility>
 #include <cassert>
 #include <algorithm>
 #include <cmath>
 #include <array>
 #include <string>
 #include <vector>
-#include <map>
-
-using namespace std;
+#include <set>
 
 void run_case() {
     int N;
-    cin >> N;
+    std::cin >> N;
 
-    vector<int> A(N, 0);
+    std::vector<int> A(N);
     for(int i = 0; i < N; i++) {
-        cin >> A[i];
+        std::cin >> A[i];
     }
 
-    sort(A.begin(), A.end());
-
-    for(int k = N; k >= 0; k--) {
-        int j = -1;
-        for(int i = N - 1; i >= 0; i--) {
-            if(A[i] <= k) {
-                j = i;
+    int lo = 0;
+    int hi = N;
+    int ans = 0;
+    while(lo <= hi) {
+        int mid = (lo + hi) >> 1;
+        
+        std::multiset<int> ms(A.begin(), A.end());
+        
+        bool win = true;
+        for(int i = 1; i <= mid; i++) {
+            int ub = mid - i + 1;
+            auto it = ms.upper_bound(ub);
+            if(it != ms.begin()) {
+                ms.erase(std::prev(it)); 
+                if(!ms.empty()) {
+                    int x = *ms.begin();
+                    ms.erase(ms.begin());
+                    ms.insert(x + ub);
+                }
+            } else {
+                win = false;
                 break;
             }
         }
 
-        if(j + 1 >= k * 2 - 1) {
-            j = k * 2 - 2;
-            bool ok = true;
-            for(int i = 1; i <= k; i++) {
-                if(A[j - i + 1] > k - i + 1) {
-                    ok = false;
-                    break;
-                }
-            }
-
-            if(ok) {
-                cout << k << '\n';
-                return;
-            }
+        if(win) {
+            ans = mid;
+            lo = mid + 1;
+        } else {
+            hi = mid - 1;
         }
     }
 
-    cout << 0 << '\n';
+    std::cout << ans << '\n';
 }
 
 int main() {
-    ios_base::sync_with_stdio(false);
-    cin.tie(0);
+    std::ios_base::sync_with_stdio(false);
+    std::cin.tie(0);
     
     int T;
-    cin >> T;
+    std::cin >> T;
     while(T--) {
         run_case();
     }

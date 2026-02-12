@@ -1,4 +1,5 @@
 #include <iostream>
+#include <utility>
 #include <cassert>
 #include <algorithm>
 #include <cmath>
@@ -6,62 +7,67 @@
 #include <string>
 #include <vector>
 
-using namespace std;
-using LL = long long;
+constexpr int64_t MOD = static_cast<int64_t>(998244353);
 
-const LL MOD = 998244353LL;
-
-LL gcd(LL a, LL b) {
-    if(a == 0) {
-        return b;
+int64_t q_pow(int64_t x, int64_t y) {
+    int64_t res = 1;
+    while(y) {
+        if(y & 1) {
+            res *= x;
+            res %= MOD;
+        }
+        x *= x;
+        x %= MOD;
+        y >>= 1;
     }
-    return gcd(b % a, a);
+    return res;
 }
 
 void run_case() {
     int N;
-    LL M;
-    cin >> N >> M;
+    int64_t M;
+    std::cin >> N >> M;
 
-    LL tot = 1LL;
-    vector<LL> p(N + 1, 0);
-    for(int i = 1; i <= N; i++) {
-        tot *= (M % MOD);
-        tot %= MOD;
-        p[i] = tot;
-    }
-
-    LL cnt_one = M % MOD;
-    LL g = 1LL;
+    std::vector<int64_t> dp(N + 1, 0);
+    std::vector<int> is_prime(N + 1, 1);
+    int64_t now = 1;
     for(int i = 2; i <= N; i++) {
-        if(g <= M && gcd(g, i) == 1LL) {
-            g *= i;
-        } 
-
-        LL x = M / g;
-        
-        if(x == 0) {
-            break;
+        if(is_prime[i]) {
+            for(int j = i + i; j <= N; j += i) {
+                is_prime[j] = 0;
+            }
+            if(now <= M / i) {
+                now *= i;
+            } else {
+                break;
+            }
         }
-        cnt_one *= x % MOD;
-        cnt_one %= MOD;
-        p[i] -= cnt_one;
-        p[i] += MOD;
-        p[i] %= MOD;
+        dp[i] = M / now;
+        dp[i] %= MOD;
     }
 
-    LL ans = 0LL;
+    M %= MOD;
+    int64_t ans = 0;
+    int64_t tot = M;
+    int64_t bad = 1;
     for(int i = 2; i <= N; i++) {
-        ans += p[i];
+        bad *= dp[i];
+        bad %= MOD;
+        int64_t cnt = M * bad % MOD;
+
+        tot *= M;
+        tot %= MOD;
+        
+        ans += (tot - cnt + MOD) % MOD;
         ans %= MOD;
     }
 
-    cout << ans << '\n';
+    std::cout << ans << '\n';
 }
 
 int main() {
-    ios_base::sync_with_stdio(false);
-    cin.tie(0);
+    std::ios_base::sync_with_stdio(false);
+    std::cin.tie(0);
     
     run_case();
 }
