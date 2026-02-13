@@ -1,4 +1,5 @@
 #include <iostream>
+#include <utility>
 #include <cassert>
 #include <algorithm>
 #include <cmath>
@@ -6,93 +7,61 @@
 #include <string>
 #include <vector>
 
-using namespace std;
-
 void run_case() {
     int N;
-    cin >> N;
+    std::cin >> N;
 
-    vector<int> A(N, 0);
+    std::vector<int> A(N);
     for(int i = 0; i < N; i++) {
-        cin >> A[i];
+        std::cin >> A[i];
     }
 
-    int sum = 0;
-    for(int x : A) {
-        sum += x;
-    }
-
-    if(sum == 0) {
-        cout << N << '\n';
-        for(int i = 1; i <= N; i++) {
-            cout << i << ' ' << i << '\n';
-        }
-    } else {
-        vector<pair<int, int>> flip;
-        vector<pair<int, int>> ans;
-        flip.reserve(N);
-        ans.reserve(N);
-
-        if(sum < 0) {
-            for(int i = 1; i < N; i++) {
-                if(A[i] == -1 && A[i - 1] == -1) {
-                    flip.emplace_back(i, i + 1);
-                    sum += 2;
-                    if(sum >= 0) {
-                        break;
-                    }
-                    i++;
-                }
-            }         
-        } else {
-            for(int i = 1; i < N; i++) {
-                if(A[i] == 1 && A[i - 1] == 1) {
-                    flip.emplace_back(i, i + 1);
-                    sum -= 2;
-                    if(sum <= 0) {
-                        break;
-                    }
-                    i++;
-                }
-            }
-        }
-
-        if(sum != 0) {
-            cout << -1 << '\n';
-            return;
-        }
-
-        int last = 0;
-        for(auto& p : flip) {
-            int l = p.first;
-            int r = p.second;
-
-            for(int i = last + 1; i < l; i++) {
+    std::vector<std::pair<int, int>> ans;
+    int now = 0;
+    int pre = -1;
+    for(int i = 0; i < N; i++) {
+        if(pre == -1) {
+            now += A[i];
+            pre = i;
+        } else if(now == 1) {
+            if(A[i] == 1) {
+                ans.emplace_back(pre, i);
+            } else {
+                ans.emplace_back(pre, pre);
                 ans.emplace_back(i, i);
             }
-
-            ans.emplace_back(l, r);
-            last = r;
+            pre = -1;
+            now = 0;
+        } else if(now == -1) {
+            if(A[i] == 1) {
+                ans.emplace_back(pre, pre);
+                ans.emplace_back(i, i);
+            } else {
+                ans.emplace_back(pre, i);
+            }
+            pre = -1;
+            now = 0;
         }
+    }
 
-        for(int i = last + 1; i <= N; i++) {
-            ans.emplace_back(i, i);
-        }
+    if(now != 0) {
+        std::cout << -1 << '\n';
+        return;
+    }
 
-        int m = ans.size();
-        cout << m << '\n';
-        for(auto& p : ans) {
-            cout << p.first << ' ' << p.second << '\n';
-        }
+    int m = ans.size();
+    std::cout << m << '\n';
+    for(auto [l, r] : ans) {
+        std::cout << l + 1 << ' ' << r + 1 << '\n';
     }
 }
 
 int main() {
-    ios_base::sync_with_stdio(false);
-    cin.tie(0);
+    std::ios_base::sync_with_stdio(false);
+    std::cin.tie(0);
     
     int T;
-    cin >> T;
+    std::cin >> T;
     while(T--) {
         run_case();
     }
