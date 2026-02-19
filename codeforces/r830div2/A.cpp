@@ -1,4 +1,5 @@
 #include <iostream>
+#include <utility>
 #include <cassert>
 #include <algorithm>
 #include <cmath>
@@ -6,55 +7,54 @@
 #include <string>
 #include <vector>
 
-using namespace std;
-
 int gcd(int a, int b) {
-    if(a == 0) return b;
+    if(a == 0) {
+        return b;
+    }
     return gcd(b % a, a);
 }
 
 void run_case() {
     int N;
-    cin >> N;
+    std::cin >> N;
 
-    vector<int> A(N);
-    int g = 0;
+    std::vector<int> A(N);
     for(int i = 0; i < N; i++) {
-        cin >> A[i];
+        std::cin >> A[i];
+    }
 
-        if(i == 0) {
-            g = A[i];
-        } else {
-            g = gcd(g, A[i]);
-        }
+    int g = A[0];
+    for(int i = 0; i < N; i++) {
+        g = gcd(g, A[i]);
     }
 
     if(g == 1) {
-        cout << 0 << '\n';
+        std::cout << 0 << '\n';
+        return;
+    }
+    if(N == 1) {
+        std::cout << 1 << '\n';
         return;
     }
 
-    vector<int> G(N, 0);
-    for(int i = 0; i < N; i++) {
-        G[i] = gcd(i + 1, A[i]);
+    int ans = 0;
+    if(gcd(g, gcd(A.back(), N)) == 1) {
+        ans = 1;
+    } else if(gcd(g, gcd(A[N - 2], N - 1)) == 1) {
+        ans = 2;
+    } else {
+        ans = 3;
     }
 
-    int ans = 3;
-    for(int i = 0; i < N; i++) {
-        if(gcd(g, gcd(i + 1, A[i])) == 1) {
-            ans = min(ans, N - i);
-        }
-    }
-
-    cout << ans << '\n';
+    std::cout << ans << '\n';
 }
 
 int main() {
-    ios_base::sync_with_stdio(false);
-    cin.tie(0);
+    std::ios_base::sync_with_stdio(false);
+    std::cin.tie(0);
     
     int T;
-    cin >> T;
+    std::cin >> T;
     while(T--) {
         run_case();
     }

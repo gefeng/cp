@@ -1,4 +1,5 @@
 #include <iostream>
+#include <utility>
 #include <cassert>
 #include <algorithm>
 #include <cmath>
@@ -8,58 +9,37 @@
 #include <set>
 #include <map>
 
-using namespace std;
-using LL = long long;
-
 void run_case() {
     int Q;
-    cin >> Q;
+    std::cin >> Q;
     
-    vector<pair<LL, LL>> A(Q, {0, 0});
+    std::set<int64_t> s;
+    std::map<int64_t, int> m;
     for(int i = 0; i < Q; i++) {
-        char C;
-        cin >> C;
-        cin >> A[i].second;
+        std::string T;
+        int64_t X;
+        std::cin >> T >> X;
 
-        if(C == '+') {
-            A[i].first = 0;
+        if(T == "+") {
+            s.insert(X); 
         } else {
-            A[i].first = 1;
-        } 
-    }
-
-    set<LL> seen;
-    map<LL, LL> save;
-    seen.insert(0LL);
-    for(auto& p : A) {
-        LL o = p.first;
-        LL x = p.second;
-
-        if(o == 0) {
-            seen.insert(x);
-        } else {
-            if(seen.find(x) == seen.end()) {
-                cout << x << '\n';
-            } else {
-                LL pre = 0LL;
-                if(save.find(x) != save.end()) {
-                    pre = save[x]; 
-                }
-
-                LL mex = pre;
-                while(seen.find(mex) != seen.end()) {
-                    mex += x;
-                }
-                save[x] = mex;
-                cout << mex << '\n';
+            int64_t c = 1;
+            if(m.find(X) != m.end()) {
+                c = m[X] + 1;
             }
+            while(s.find(c * X) != s.end()) {
+                c += 1;
+            }
+            m[X] = c - 1;
+
+            std::cout << c * X << '\n';
         }
     }
 }
 
 int main() {
-    ios_base::sync_with_stdio(false);
-    cin.tie(0);
+    std::ios_base::sync_with_stdio(false);
+    std::cin.tie(0);
     
     run_case();
 }

@@ -1,4 +1,5 @@
 #include <iostream>
+#include <utility>
 #include <cassert>
 #include <algorithm>
 #include <cmath>
@@ -6,34 +7,42 @@
 #include <string>
 #include <vector>
 
-using namespace std;
-
 void run_case() {
     int N;
-    cin >> N;
+    std::cin >> N;
 
-    string S;
-    cin >> S;
-
-    int d = 0;
-    for(int i = 1; i < N; i++) {
-        int x = (S[i - 1] - '0' + d) % 2;
-        int y = (S[i] - '0' + d) % 2;
-
-        if(x == 1 && y == 0) {
-            d++;
+    std::string S;
+    std::cin >> S;
+    
+    std::string s = "";
+    for(int i = 0; i < N; ) {
+        int j = i;
+        while(i < N && S[i] == S[j]) {
+            i += 1;
         }
+        s.push_back(S[j]);
+    }
+    
+    int n = s.size();
+    if(n == 1 || s == "01") {
+        std::cout << 0 << '\n';
+        return;
     }
 
-    cout << d << '\n';
+    int ans = n - 2;
+    if(s[0] == '1') {
+        ans += 1;
+    }
+
+    std::cout << ans << '\n';
 }
 
 int main() {
-    ios_base::sync_with_stdio(false);
-    cin.tie(0);
+    std::ios_base::sync_with_stdio(false);
+    std::cin.tie(0);
     
     int T;
-    cin >> T;
+    std::cin >> T;
     while(T--) {
         run_case();
     }
