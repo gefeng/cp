@@ -1,4 +1,5 @@
 #include <iostream>
+#include <utility>
 #include <cassert>
 #include <algorithm>
 #include <cmath>
@@ -6,46 +7,48 @@
 #include <string>
 #include <vector>
 
-using namespace std;
-
 void run_case() {
     int N;
-    cin >> N;
+    std::cin >> N;
     
-    string s = "";
+    std::string s = "";
     for(int i = 0; i < N; i++) {
         s.append("BAN");
     }
 
-    vector<pair<int, int>> ans;
-    int n = N / 2;
     int l = 0;
-    int r = 3 * N - 1;
-    while(n) {
-        swap(s[l], s[r]); 
-        ans.emplace_back(l, r);
-        l += 3;
-        r -= 3;
-        n -= 1;
+    int r = N * 3 - 1;
+    std::vector<std::pair<int, int>> ans;
+    while(l <= r) {
+        while(l <= r && s[l] != 'B') {
+            l += 1;
+        }
+        while(l <= r && s[r] != 'N') {
+            r -= 1;
+        }
+        
+        if(l < r && s[r] == 'N' && s[l] == 'B') {
+            ans.emplace_back(l, r);
+            l += 1;
+            r -= 1;
+        } else {
+            break;
+        }
     }
 
-    if(l < r) {
-        swap(s[l], s[r]);
-        ans.emplace_back(l, r);
+    int m = ans.size();
+    std::cout << m << '\n';
+    for(int i = 0; i < m; i++) {
+        std::cout << ans[i].first + 1 << ' ' << ans[i].second + 1 << '\n';
     }
-
-    cout << ans.size() << '\n';
-    for(auto& p : ans) {
-        cout << p.first + 1 << ' ' << p.second + 1 << '\n';
-    }    
 }
 
 int main() {
-    ios_base::sync_with_stdio(false);
-    cin.tie(0);
+    std::ios_base::sync_with_stdio(false);
+    std::cin.tie(0);
     
     int T;
-    cin >> T;
+    std::cin >> T;
     while(T--) {
         run_case();
     }

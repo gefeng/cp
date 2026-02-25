@@ -1,100 +1,78 @@
 #include <iostream>
+#include <utility>
 #include <cassert>
 #include <algorithm>
 #include <cmath>
 #include <array>
 #include <string>
 #include <vector>
-#include <unordered_map>
-
-using namespace std;
+#include <map>
 
 void run_case() {
     int N, Q;
-    cin >> N >> Q;
+    std::cin >> N >> Q;
 
-    vector<int> A(N);
+    std::vector<int> A(N);
     for(int i = 0; i < N; i++) {
-        cin >> A[i];
+        std::cin >> A[i];
     }
 
-    vector<pair<int, int>> B(Q);
+    std::vector<int> psum(N + 1, 0);
+    std::vector<int> cnt0(N + 1, 0);
+    std::vector<int> nxt(N, -1);
+    for(int i = 0; i < N; i++) {
+        psum[i + 1] = psum[i] ^ A[i];
+        cnt0[i + 1] = cnt0[i] + (A[i] == 0 ? 1 : 0);
+    }
+
+    std::map<int, int> eve;
+    std::map<int, int> odd;
+    for(int i = N - 1; i >= 0; i--) {
+        int t = psum[i];
+        if(i % 2 == 0) {
+            nxt[i] = eve.find(t) == eve.end() ? N : eve[t];
+            eve[psum[i + 1]] = i;
+        } else {
+            nxt[i] = odd.find(t) == odd.end() ? N : odd[t];
+            odd[psum[i + 1]] = i;
+        }
+    }
+
     for(int i = 0; i < Q; i++) {
-        cin >> B[i].first >> B[i].second;
-    }
+        int L, R;
+        std::cin >> L >> R;
+        L -= 1;
+        R -= 1;
 
-    vector<int> xor_sum(N + 1, 0);
-    for(int i = 1; i <= N; i++) {
-        xor_sum[i] = xor_sum[i - 1] ^ A[i - 1];
-    }
+        if(psum[R + 1] ^ psum[L]) {
+            std::cout << -1 << '\n';
+            continue;
+        }
+        int len = R - L + 1;
+        if(cnt0[R + 1] - cnt0[L] == len) {
+            std::cout << 0 << '\n';
+            continue;
+        }
 
-    vector<int> cnt_zero(N + 1, 0);
-    for(int i = 1; i <= N; i++) {
-        cnt_zero[i] = cnt_zero[i - 1] + (A[i - 1] == 0 ? 1 : 0);
-    }
-
-    unordered_map<int, vector<int>> eve_map;
-    unordered_map<int, vector<int>> odd_map;
-    for(int i = 1; i <= N; i++) {
-        if(i & 1) {
-            odd_map[xor_sum[i]].push_back(i - 1);
+        if(len % 2 == 1) {
+            std::cout << 1 << '\n';
         } else {
-            eve_map[xor_sum[i]].push_back(i - 1);
-        }
-    }
-
-    for(auto& p : B) {
-        int l = p.first;
-        int r = p.second;
-        l--;
-        r--;
-
-        int len = r - l + 1;
-        int zero = cnt_zero[r + 1] - cnt_zero[l];
-        if(zero == len) {
-            cout << 0 << '\n';
-            continue;
-        } 
-
-        if((xor_sum[r + 1] ^ xor_sum[l]) != 0 || len == 2) {
-            cout << -1 << '\n';
-            continue;
-        }
-
-        if(len & 1) {
-            cout << 1 << '\n';
-            continue;
-        }
-
-        if(A[l] == 0 || A[r] == 0) {
-            cout << 1 << '\n';
-            continue;
-        }
-
-        int t = xor_sum[l];
-        if(l & 1) {
-            vector<int>& v = eve_map[t];
-            auto it = lower_bound(v.begin(), v.end(), l);
-            if(it != v.end() && *it <= r) {
-                cout << 2 << '\n';
+            if(A[L] == 0 || A[R] == 0) {
+                std::cout << 1 << '\n';
             } else {
-                cout << -1 << '\n';
-            }
-        } else {
-            vector<int>& v = odd_map[t]; 
-            auto it = lower_bound(v.begin(), v.end(), l);
-            if(it != v.end() && *it <= r) {
-                cout << 2 << '\n';
-            } else {
-                cout << -1 << '\n';
+                if(nxt[L] > R) {
+                    std::cout << -1 << '\n';
+                } else {
+                    std::cout << 2 << '\n';
+                }
             }
         }
     }
 }
 
 int main() {
-    ios_base::sync_with_stdio(false);
-    cin.tie(0);
+    std::ios_base::sync_with_stdio(false);
+    std::cin.tie(0);
     
     run_case();
 }

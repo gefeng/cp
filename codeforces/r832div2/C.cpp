@@ -1,4 +1,5 @@
 #include <iostream>
+#include <utility>
 #include <cassert>
 #include <algorithm>
 #include <cmath>
@@ -6,35 +7,47 @@
 #include <string>
 #include <vector>
 
-using namespace std;
-
 void run_case() {
-    int N; 
-    cin >> N;
+    int N;
+    std::cin >> N;
     
-    vector<int> A(N);
+    std::vector<int> A(N);
     for(int i = 0; i < N; i++) {
-        cin >> A[i];
+        std::cin >> A[i];
     }
 
-    int min_v = 1e9;
-    for(int x : A) {
-        min_v = min(min_v, x);
+    if(A[0] == 1) {
+        std::cout << "Bob" << '\n';
+        return;
     }
 
-    if(A[0] == min_v) {
-        cout << "Bob" << '\n';
-    } else {
-        cout << "Alice" << '\n';
+    int cnt = std::ranges::count(A, 1);
+    if(cnt) {
+        std::cout << "Alice" << '\n';
+        return;
     }
+
+    if(A[0] == 2) {
+        std::cout << "Bob" << '\n';
+        return;
+    }
+
+    for(int i = 1; i < N; i++) {
+        if(A[i] < A[0]) {
+            std::cout << "Alice" << '\n';
+            return;
+        }
+    }
+
+    std::cout << "Bob" << '\n';
 }
 
 int main() {
-    ios_base::sync_with_stdio(false);
-    cin.tie(0);
+    std::ios_base::sync_with_stdio(false);
+    std::cin.tie(0);
     
     int T;
-    cin >> T;
+    std::cin >> T;
     while(T--) {
         run_case();
     }
