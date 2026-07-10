@@ -107,47 +107,13 @@ void run_case() {
             }
         }
     } else {
-        std::vector<int> a;
-        int x = L;
-        while(x <= R) {
-            a.push_back(x);
-            for(int i = 0; i < 30; i++) {
-                if(x & (1 << i)) {
-                    if((x + (1 << i)) <= R) {
-                        x += (1 << i);
-                    } else {
-                        bool end = true;
-                        for(int j = i - 1; j >= 0; j--) {
-                            if((x + (1 << j)) <= R) {
-                                x += (1 << j);
-                                end = false;
-                                break;
-                            }
-                        }
-                        if(end) {
-                            x = R + 1;
-                        }
-                    }
-                    break;
-                }
+        for(int i = 29; i >= 0; i--) {
+            if((L & (1 << i)) != (R & (1 << i))) {
+                int x = ((R >> i) << i);
+                ans = generate(L, x);
+                break;
             }
         }
-        
-        int cand1 = 0;
-        int cand2 = 0;
-        int min_v = INF;
-        for(int x1 : a) {
-            for(int x2 : a) {
-                if(x1 != x2) {
-                    if((x1 & x2) < min_v) {
-                        min_v = x1 & x2;
-                        cand1 = x1;
-                        cand2 = x2;
-                    }
-                }
-            }
-        }
-        ans = generate(cand1, cand2);
     }
 
     std::cout << ans << '\n';
