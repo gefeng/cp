@@ -13,6 +13,20 @@ constexpr int MAX = 5000;
 // put x objects into y boxes
 std::vector<std::vector<int64_t>> comb(MAX + 1, std::vector<int64_t>(MAX + 1, 0));
 
+int64_t q_pow(int64_t x, int64_t y) {
+    int64_t res = 1;
+    while(y) {
+        if(y & 1) {
+            res *= x;
+            res %= MOD;
+        }
+        x *= x;
+        x %= MOD;
+        y >>= 1;
+    }
+    return res;
+}
+
 void run_case() {
     int N;
     std::cin >> N;
@@ -52,6 +66,7 @@ void run_case() {
 
     for(int i = 0; i < 2; i++) {
         int64_t sum = 0;
+
         for(int j = 1; j <= freq[i]; j++) {
             sum += comb[freq[i]][j];
             sum %= MOD;
@@ -76,8 +91,6 @@ int main() {
             comb[i][j] %= MOD;
         }
     } 
-
-    //std::cout << comb[4][1] + comb[4][2] + comb[4][3] + comb[4][4] << '\n';
     
     int T;
     std::cin >> T;
